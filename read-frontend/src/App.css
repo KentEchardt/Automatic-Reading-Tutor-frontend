@@ -1,3 +1,26 @@
-.primary-color{
-  background-color: aqua;
+.primary-colour{
+  background-color: mediumslateblue;
+}
+
+
+.navbar-logo {
+  max-height: 11cqh; /* Adjust based on your navbar height */
+  width: auto; /* This ensures the logo maintains its aspect ratio */
+  
+}
+@media (max-width: 768px) {
+  .navbar-logo {
+    max-height: 50px; /* Smaller logo on smaller screens */
+  }
+}
+
+.custom-navbar {
+  background-color: black !important; /* Bootstrap primary blue for example */
+  height: 11cqh;
+  justify-content: center;
+  text-align: center;    
+  display: flex;
+  align-items: center;
+  width: 100%
+
 }
