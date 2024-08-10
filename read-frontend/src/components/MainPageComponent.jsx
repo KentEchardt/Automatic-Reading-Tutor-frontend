@@ -1,13 +1,16 @@
 import React from 'react'
 import HeaderComponent from './HeaderComponent'
 import FooterComponent from './FooterComponent'
+import StoryListComponent from './StoryListComponent'
 
 
 const MainPageComponent = () => {
   return (
     <div>
         <HeaderComponent/>
-        <div style = {{height : "82cqh"}}></div>
+        <div>
+          <StoryListComponent/>
+        </div>
     </div>
   )
 }

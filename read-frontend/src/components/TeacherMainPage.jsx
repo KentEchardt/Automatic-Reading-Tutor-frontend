@@ -1,12 +1,12 @@
 import React from 'react'
 import HeaderComponent from './HeaderComponent'
 
-const AdminPage = () => {
+const TeacherMainPage = () => {
   return (
     <div>
-      <HeaderComponent/>
+        <HeaderComponent/>
     </div>
   )
 }
 
-export default AdminPage
+export default TeacherMainPage

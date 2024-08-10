@@ -22,7 +22,7 @@ const HamburgerToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 const HeaderComponent = () => {
   return (
-    <div>
+    <div >
         <Navbar className='custom-navbar' expand="lg">
             <Navbar.Brand href='/'>
                 <img src = "images/booklogo.jpg" className="d-inline-block align-top navbar-logo justify-content-left" alt="Logo"/>
