@@ -15,12 +15,16 @@
 }
 
 .custom-navbar {
-  background-color: black !important; /* Bootstrap primary blue for example */
+  background-color: mediumslateblue !important; /* Bootstrap primary blue for example */
   height: 11cqh;
   justify-content: center;
   text-align: center;    
   display: flex;
   align-items: center;
   width: 100%
+}
+
+.detail-circle:hover, .story-circle:hover {
+  transform: scale(1.1);
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Carousel, Container, Row } from 'react-bootstrap';
 import StoryCard from './StoryCard'; // Assuming StoryCard component is in the same folder
+import UserSummaryComponent from './UserSummaryComponent';
 
 const dummydata = {
     "stories": [
@@ -58,10 +59,15 @@ const dummydata = {
         "difficulty": "hard",
         "image": "images/race.jpeg"
       }
-    ]
+    ],
+    "user":
+        {"username":"Yash",
+            "readingLevel": "A",
+            "totalStoriesRead":"100",
+                        }
   }
   
-
+ 
 
   const StoryListComponent = () => {
     const easyStories = dummydata.stories.filter(story => story.difficulty === 'easy');
@@ -69,27 +75,49 @@ const dummydata = {
     const hardStories = dummydata.stories.filter(story => story.difficulty === 'hard');
   
     return (
-        <div>
-            <div style={{height:'50cqh'}}>
-            <h1>Welcome User!</h1>
-        </div>
+        <div style={{backgroundColor:'black', color:'white'}} >
+            <div style={{marginBottom:'10cqh', paddingTop: '10cqh'}}>
+            <UserSummaryComponent user={dummydata.user} mostrecentstory={dummydata.stories[1]}/>
+    
+            </div>
        
 
-        <Container fluid style={{marginBottom:'4cqh'}}>
+        <Container fluid style={{paddingBottom:'10cqh'}}>
                     
+        <Row style={{height:"auto"}}>
         {/* Recommended Stories Carousel */}
-        <Row>
             <h3 style={{marginTop:"4cqh", marginBottom: '2cqh'}}>Recommended Stories</h3>
-            <div style={{height:'30cqh'}}></div>
+      
         <Carousel indicators={false} interval={null}>
           {/* Add multiple items in a single carousel item */}
           <Carousel.Item>
             <div className="d-flex justify-content-between">
-              {/* Placeholder for recommended story cards */}
+              {mediumStories.map((story, index) => (
+                <StoryCard key={index} story={story} />
+              ))}
             </div>
           </Carousel.Item>
         </Carousel>
-  
+        </Row>
+        
+        <Row>
+        {/* My List Stories Carousel */}
+            <h3 style={{marginTop:"4cqh", marginBottom: '2cqh'}}>My List</h3>
+         
+        <Carousel indicators={false} interval={null}>
+          {/* Add multiple items in a single carousel item */}
+          <Carousel.Item>
+         
+            <div className="d-flex justify-content-between">
+              {hardStories.map((story, index) => (
+                <StoryCard key={index} story={story} />
+              ))}
+            </div>
+          </Carousel.Item>
+        </Carousel>
+        </Row>
+        
+       <Row>
         {/* Easy Stories Carousel */}
         <h3 style={{marginTop:"4cqh", marginBottom: '2cqh'}}>Easy Stories</h3>
         <Carousel indicators={false} interval={null}>
