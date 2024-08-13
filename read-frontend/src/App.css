@@ -8,8 +8,8 @@
 
 
 .navbar-logo {
-  max-height: 11cqh; /* Adjust based on your navbar height */
-  width: auto; /* This ensures the logo maintains its aspect ratio */
+  max-height: 9cqh; 
+  width: auto; 
   
 }
 @media (max-width: 768px) {
@@ -18,8 +18,9 @@
   }
 }
 
+
 .custom-navbar {
-  background-color: mediumslateblue !important; /* Bootstrap primary blue for example */
+  background-color: black !important; 
   height: 11cqh;
   justify-content: center;
   text-align: center;    
@@ -28,6 +29,58 @@
   width: 100%
 }
 
+/* Moving Conic Gradient Border Animation for Navbar */
+@property --bg-angle {
+  inherits: false;
+  initial-value: 0deg;
+  syntax: "<angle>";
+}
+
+/**
+ * To animate the gradient, we set the custom property to 1 full
+ * rotation. The animation starts at the default value of `0deg`.
+ */
+@keyframes spin {
+  to {
+    --bg-angle: 360deg;
+  }
+}
+
+/* Navbar class with gradient border animation */
+.custom-navbar-border {
+  /* change "running" to "paused" for running when hovering effect 
+  spin duration determines speed of animation*/
+  animation: spin 4s infinite linear running;
+  
+  background:
+    /* Background colors don’t work with `background-origin`, so use a gradient. */
+    linear-gradient(
+        to bottom,
+        rgba(0, 0, 50, 0.95),
+        rgba(0, 0, 50, 0.95)
+      )
+      padding-box, /* ends at inner border edges */
+    conic-gradient(
+        from var(--bg-angle),
+        hsl(210, 100%, 50%) 0deg,
+        hsl(101, 100%, 50%) 90deg,
+        hsl(270, 100%, 50%) 180deg,
+        hsl(300, 100%, 50%) 270deg,
+        hsl(210, 100%, 50%) 360deg
+      )
+      border-box;
+  
+  border-bottom: 10px solid transparent;
+  border-top: 10px solid transparent;
+}
+
+/*Hover state to start the border animation */
+.custom-navbar-border:hover {
+  animation-play-state: running;
+}
+
+
+/* Hover state for scaling of story cirle */
 .detail-circle:hover, .story-circle:hover {
   transform: scale(1.1);
 }
@@ -44,3 +97,23 @@
   height:25cqh
 }
 
+
+
+/* Footer border */
+.conic-gradient-border {
+  border-top: 10px solid;
+ 
+  border-image-slice: 1;
+  border-image-source: conic-gradient(
+    hsl(209, 100%, 60%),
+    hsl(221, 100%, 60%),
+    hsl(263, 100%, 60%),
+    hsl(303, 100%, 60%),
+    
+    hsl(209, 100%, 60%),
+    hsl(221, 100%, 60%),
+    hsl(271, 100%, 60%),
+    hsl(303, 100%, 60%),
+    hsl(207, 100%, 60%)
+  );
+}

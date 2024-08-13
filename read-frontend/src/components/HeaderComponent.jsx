@@ -1,9 +1,10 @@
 import React from 'react'
 import {Container, Dropdown, Nav, Navbar} from 'react-bootstrap'
 import { FiMenu } from "react-icons/fi";
+import { BsPersonSquare } from "react-icons/bs";
 
 
-
+// Defining the hamburger toggle for the general menu
 const HamburgerToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a
     href=""
@@ -16,37 +17,68 @@ const HamburgerToggle = React.forwardRef(({ children, onClick }, ref) => (
     className='text-white mx-2'
   >
     {children}
-    <Container className= 'text-center' style={{display:"flex", flexDirection:'row',justifyContent:'flex-end', alignItems:'baseline'}}><FiMenu /><h5 className='mx-2'>Menu</h5></Container>
+    <Container className= 'text-center' style={{display:"flex", flexDirection:'row',justifyContent:'flex-end', alignItems:'baseline'}}><FiMenu size={50} /></Container>
   </a>
 ));
 
+// Defining the profile toggle for the profile menu
+const ProfileToggle = React.forwardRef(({ children, onClick }, ref) => (
+  <a
+    href=""
+    ref={ref}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+    style={{ textDecoration: 'none' }}
+    className='text-white mx-2'
+  >
+    {children}
+    <Container className= 'text-center' style={{display:"flex", flexDirection:'row',justifyContent:'flex-end', alignItems:'baseline'}}><BsPersonSquare size={50} /></Container> 
+  </a>
+));
+
+
 const HeaderComponent = () => {
   return (
-    <div >
-        <Navbar className='custom-navbar' expand="lg">
-            <Navbar.Brand href='/'>
-                <img src = "images/booklogo.jpg" className="d-inline-block align-top navbar-logo justify-content-left" alt="Logo"/>
-            </Navbar.Brand>
-            <Navbar.Collapse className='justify-content-center'>
-              <Nav href="" className="mx-auto text-light text-center justify-content-center" style={{paddingRight:"2cqw"}}  ><h5>R.E.A.D - Automatic Reading Tutor</h5>
-              </Nav>
-
-            </Navbar.Collapse>
-
-            <Nav>
-          <Dropdown className="d-inline">
-            <Dropdown.Toggle as={HamburgerToggle} id="dropdown-autoclose-true">
-            </Dropdown.Toggle>
-            <Dropdown.Menu align={{ lg: 'end' }} style={{ right: '0', left: 'auto' }}>
-              <Dropdown.Item href="#">Contact Us</Dropdown.Item>
-              <Dropdown.Item href="https://summerterraces.co.za/" target='_blank' rel='noopener noreferrer'>Main Website</Dropdown.Item>
-              <Dropdown.Item href="#">Development Brochure</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+    <div className='custom-navbar-border' >
+       <Navbar className="custom-navbar" expand="lg">
+  <Container fluid>
     
-          </Nav>
+    <Nav className="me-auto">
+      <Dropdown className="d-inline">
+        <Dropdown.Toggle as={HamburgerToggle} id="dropdown-autoclose-true">
+        </Dropdown.Toggle>
+        <Dropdown.Menu align={{ lg: 'end' }} style={{ right: 'auto', left: '0' }}>
+          <Dropdown.Item href="#">Contact Us</Dropdown.Item>
+          <Dropdown.Item href="https://summerterraces.co.za/" target='_blank' rel='noopener noreferrer'>Main Website</Dropdown.Item>
+          <Dropdown.Item href="#">Development Brochure</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </Nav>
 
-        </Navbar>
+    <Navbar.Brand href="/" className='justify-content-center mx-auto' >
+      <img src="images/ReadLogo.jpeg" className="d-inline-block align-top navbar-logo" alt="Logo" />
+    </Navbar.Brand>
+
+    <Nav className="ms-auto">
+    <Dropdown className="d-inline"  >
+        <Dropdown.Toggle as={ProfileToggle} id="dropdown-autoclose-true">
+        </Dropdown.Toggle>
+        <Dropdown.Menu align={{ lg: 'end' }} style={{ right: '0', left: 'auto' }} >
+          <Dropdown.Item href="#">My Shortlist</Dropdown.Item>
+          <Dropdown.Item href="#">My Profile</Dropdown.Item>
+          <Dropdown.Item >Sign Out</Dropdown.Item>
+        </Dropdown.Menu>
+            
+          </Dropdown>
+
+    </Nav>
+  </Container>
+</Navbar>
+
+
+
 
         
     </div>

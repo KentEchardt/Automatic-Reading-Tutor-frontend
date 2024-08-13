@@ -1,3 +1,4 @@
+// Component for displaying Stories for Users to choose from
 import React from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
@@ -116,6 +117,7 @@ const StoryListComponent = () => {
             showDots={false}
             renderButtonGroupOutside={false}
             renderDotsOutside={false}
+            className='custom-navbar-border'
           >
             
             {mediumStories.map((story, index) => (
@@ -141,6 +143,7 @@ const StoryListComponent = () => {
             showDots={false}
             renderButtonGroupOutside={false}
             renderDotsOutside={false}
+             className='custom-navbar-border'
           >
             {dummydata.stories.map((story, index) => (
               <StoryCard key={index} story={story} />
@@ -165,6 +168,7 @@ const StoryListComponent = () => {
             showDots={false}
             renderButtonGroupOutside={false}
             renderDotsOutside={false}
+             className='custom-navbar-border'
           >
             {easyStories.map((story, index) => (
               <StoryCard key={index} story={story} />
@@ -189,6 +193,7 @@ const StoryListComponent = () => {
             showDots={false}
             renderButtonGroupOutside={false}
             renderDotsOutside={false}
+             className='custom-navbar-border'
           >
             {mediumStories.map((story, index) => (
               <StoryCard key={index} story={story} />
@@ -213,6 +218,7 @@ const StoryListComponent = () => {
             showDots={false}
             renderButtonGroupOutside={false}
             renderDotsOutside={false}
+             className='custom-navbar-border'
           >
             {hardStories.map((story, index) => (
               <StoryCard key={index} story={story} />
