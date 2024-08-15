@@ -5,6 +5,7 @@ import StoryListComponent from './StoryListComponent'
 
 //Component for displaying the Reader main page
 const MainPageComponent = () => {
+
   return (
     <div>
         <HeaderComponent/>

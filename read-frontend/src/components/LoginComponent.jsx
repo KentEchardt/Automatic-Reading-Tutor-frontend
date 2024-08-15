@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import HeaderComponent from './HeaderComponent';
 import { useNavigate } from 'react-router-dom';
+import HeaderPlain from './HeaderPlain';
 
 
 //Component for allowing a User to log in
@@ -27,7 +28,7 @@ const LoginComponent = () => {
 
   return (
     <div>
-        <HeaderComponent/>
+        <HeaderPlain/>
     
     <div className='' style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' , backgroundColor:'black'}}>
       <Container className='border login-popup' style={{ width: '80%', maxWidth: '600px', backgroundColor: 'white', borderRadius: '10px', padding: '2rem', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' }}>

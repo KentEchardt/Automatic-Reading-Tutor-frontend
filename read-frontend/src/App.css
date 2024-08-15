@@ -118,6 +118,24 @@
   );
 }
 
+.demo-border{
+  border: 10px solid;
+ 
+  border-image-slice: 1;
+  border-image-source: conic-gradient(
+    hsl(209, 100%, 60%),
+    hsl(221, 100%, 60%),
+    hsl(263, 100%, 60%),
+    hsl(303, 100%, 60%),
+    
+    hsl(209, 100%, 60%),
+    hsl(221, 100%, 60%),
+    hsl(271, 100%, 60%),
+    hsl(303, 100%, 60%),
+    hsl(207, 100%, 60%)
+  );
+}
+
 .login-image{
   height: 40%;
   width: auto;
