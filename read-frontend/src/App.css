@@ -117,3 +117,10 @@
     hsl(207, 100%, 60%)
   );
 }
+
+.login-image{
+  height: 40%;
+  width: auto;
+  object-fit: contain;
+  
+}

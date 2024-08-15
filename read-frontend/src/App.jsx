@@ -1,9 +1,10 @@
 import './App.css'
-import {Routes, Route } from 'react-router-dom'
+import {Routes, Route , BrowserRouter} from 'react-router-dom'
 import MainPageComponent from './components/MainPageComponent'
 import FooterComponent from './components/FooterComponent'
 import AdminPage from './components/AdminPage'
 import TeacherMainPage from './components/TeacherMainPage'
+import LoginComponent from './components/LoginComponent'
 
 function App() {
   
@@ -11,6 +12,8 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path = "/login" element= {<LoginComponent/>}></Route>
+        
         <Route path = "/" element={<MainPageComponent/>}></Route>
         <Route path = "/admin" element= {<AdminPage/>}></Route>
         <Route path = "/teacher" element= {<TeacherMainPage/>}></Route>

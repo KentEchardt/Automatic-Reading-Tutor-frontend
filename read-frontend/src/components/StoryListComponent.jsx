@@ -1,5 +1,5 @@
 // Component for displaying Stories for Users to choose from
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
 import StoryCard from './StoryCard';
@@ -64,7 +64,7 @@ const dummydata = {
     }
   ],
   "user": {
-    "username": "Yash",
+    "username": "<Username>",
     "readingLevel": "A",
     "totalStoriesRead": "100",
   }
@@ -87,6 +87,16 @@ const responsiveSettings = {
     partialVisibilityGutter: 30
   }
 };
+
+//Defining and handling selectedStory, which is used to determine when a story should be shown in a Modal
+// const [selectedStory, setSelectedStory] = useState(null);
+// const handleView = (story) => {
+//   setSelectedStory(story);
+// };
+
+// const handleClose = () => {
+//   setSelectedStory(null);
+// };
 
 const StoryListComponent = () => {
   const easyStories = dummydata.stories.filter(story => story.difficulty === 'easy');
