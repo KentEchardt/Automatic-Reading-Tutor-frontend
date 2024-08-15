@@ -5,6 +5,7 @@ import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
 import StoryCard from './StoryCard';
 import UserSummaryComponent from './UserSummaryComponent';
 import {Container,Row} from 'react-bootstrap'
+import StoryCarousel from './StoryCarousel';
 
 const dummydata = {
   "stories": [
@@ -98,6 +99,7 @@ const responsiveSettings = {
 //   setSelectedStory(null);
 // };
 
+//Component for displaying all story carousels
 const StoryListComponent = () => {
   const easyStories = dummydata.stories.filter(story => story.difficulty === 'easy');
   const mediumStories = dummydata.stories.filter(story => story.difficulty === 'medium');
@@ -105,135 +107,41 @@ const StoryListComponent = () => {
 
   return (
     <div style={{ backgroundColor: 'black', color: 'white' }}>
+      
       <div style={{ marginBottom: '5cqh', paddingTop: '10cqh' }}>
         <UserSummaryComponent user={dummydata.user} mostrecentstory={dummydata.stories[1]} />
       </div>
 
       <Container fluid style={{ paddingBottom: '10cqh' }}>
+
         {/* Recommended Stories Carousel */}
         <Row style={{ height: "auto" }}>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh', }}>Recommended Stories</h3>
-          <Carousel
-            responsive={responsiveSettings}
-            arrows
-            infinite
-            autoPlaySpeed={3000}
-            centerMode
-            swipeable
-            draggable
-            keyBoardControl
-            containerClass="recommended-carousel"
-            itemClass=""
-            showDots={false}
-            renderButtonGroupOutside={false}
-            renderDotsOutside={false}
-            className='custom-navbar-border'
-          >
-            
-            {mediumStories.map((story, index) => (
-              <StoryCard key={index} story={story} />
-            ))}
-          </Carousel>
+          <StoryCarousel stories={dummydata.stories} responsiveSettings={responsiveSettings} containerClass={"recommended-carousel"}/>
         </Row>
 
         {/* My List Stories Carousel */}
         <Row>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh' }}>My List</h3>
-          <Carousel
-            responsive={responsiveSettings}
-            arrows
-            infinite
-            autoPlaySpeed={3000}
-            centerMode
-            swipeable
-            draggable
-            keyBoardControl
-            containerClass="other-carousels"
-            itemClass=""
-            showDots={false}
-            renderButtonGroupOutside={false}
-            renderDotsOutside={false}
-             className='custom-navbar-border'
-          >
-            {dummydata.stories.map((story, index) => (
-              <StoryCard key={index} story={story} />
-            ))}
-          </Carousel>
+           <StoryCarousel stories={hardStories} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
         </Row>
 
         {/* Easy Stories Carousel */}
         <Row>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh' }}>Easy Stories</h3>
-          <Carousel
-            responsive={responsiveSettings}
-            arrows
-            infinite
-            autoPlaySpeed={3000}
-            centerMode
-            swipeable
-            draggable
-            keyBoardControl
-            containerClass="other-carousels"
-            itemClass=""
-            showDots={false}
-            renderButtonGroupOutside={false}
-            renderDotsOutside={false}
-             className='custom-navbar-border'
-          >
-            {easyStories.map((story, index) => (
-              <StoryCard key={index} story={story} />
-            ))}
-          </Carousel>
+          <StoryCarousel stories={easyStories} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
         </Row>
 
         {/* Medium Stories Carousel */}
         <Row>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh' }}>Medium Stories</h3>
-          <Carousel
-            responsive={responsiveSettings}
-            arrows
-            infinite
-            autoPlaySpeed={3000}
-            centerMode
-            swipeable
-            draggable
-            keyBoardControl
-            containerClass="other-carousels"
-            itemClass=""
-            showDots={false}
-            renderButtonGroupOutside={false}
-            renderDotsOutside={false}
-             className='custom-navbar-border'
-          >
-            {mediumStories.map((story, index) => (
-              <StoryCard key={index} story={story} />
-            ))}
-          </Carousel>
+          <StoryCarousel stories={mediumStories} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
         </Row>
 
         {/* Hard Stories Carousel */}
         <Row>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh' }}>Hard Stories</h3>
-          <Carousel
-            responsive={responsiveSettings}
-            arrows
-            infinite
-            autoPlaySpeed={3000}
-            centerMode
-            swipeable
-            draggable
-            keyBoardControl
-            containerClass="other-carousels"
-            itemClass=""
-            showDots={false}
-            renderButtonGroupOutside={false}
-            renderDotsOutside={false}
-             className='custom-navbar-border'
-          >
-            {hardStories.map((story, index) => (
-              <StoryCard key={index} story={story} />
-            ))}
-          </Carousel>
+          <StoryCarousel stories={hardStories} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
         </Row>
       </Container>
     </div>

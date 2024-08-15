@@ -4,7 +4,7 @@ import { FiMenu } from "react-icons/fi";
 import { BsPersonSquare } from "react-icons/bs";
 
 
-// Defining the hamburger toggle for the general menu
+// Defining the hamburger toggle for the hamburger menu
 const HamburgerToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a
     href=""
@@ -38,35 +38,37 @@ const ProfileToggle = React.forwardRef(({ children, onClick }, ref) => (
   </a>
 ));
 
-
+//Component for displaying the main website header - to be displayed on most pages
 const HeaderComponent = () => {
   return (
     <div className='custom-navbar-border' >
        <Navbar className="custom-navbar" expand="lg">
   <Container fluid>
     
+    {/* Hamburger Menu  */}
     <Nav className="me-auto">
       <Dropdown className="d-inline">
         <Dropdown.Toggle as={HamburgerToggle} id="dropdown-autoclose-true">
         </Dropdown.Toggle>
         <Dropdown.Menu align={{ lg: 'end' }} style={{ right: 'auto', left: '0' }}>
-          <Dropdown.Item href="#">Contact Us</Dropdown.Item>
-          <Dropdown.Item href="https://summerterraces.co.za/" target='_blank' rel='noopener noreferrer'>Main Website</Dropdown.Item>
-          <Dropdown.Item href="#">Development Brochure</Dropdown.Item>
+        <Dropdown.Item href="#">Settings</Dropdown.Item>
+        <Dropdown.Item href="#">Contact Us</Dropdown.Item>
+              
         </Dropdown.Menu>
       </Dropdown>
     </Nav>
 
+    {/* Centered Logo */}
     <Navbar.Brand href="/" className='justify-content-center mx-auto' >
       <img src="images/ReadLogo.jpeg" className="d-inline-block align-top navbar-logo" alt="Logo" />
     </Navbar.Brand>
 
+    {/* Profile Menu */}
     <Nav className="ms-auto">
     <Dropdown className="d-inline"  >
         <Dropdown.Toggle as={ProfileToggle} id="dropdown-autoclose-true">
         </Dropdown.Toggle>
         <Dropdown.Menu align={{ lg: 'end' }} style={{ right: '0', left: 'auto' }} >
-          <Dropdown.Item href="#">My Shortlist</Dropdown.Item>
           <Dropdown.Item href="#">My Profile</Dropdown.Item>
           <Dropdown.Item >Sign Out</Dropdown.Item>
         </Dropdown.Menu>

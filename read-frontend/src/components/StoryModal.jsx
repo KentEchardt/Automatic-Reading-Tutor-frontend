@@ -1,6 +1,7 @@
 import {React, useState, useEffect} from 'react'
 import {Modal, Button, Container, Row} from 'react-bootstrap'
 
+//Component for displaying story details in a Modal
 const StoryModal = ({ story, onClose }) => {
     if (!story) return null;
   

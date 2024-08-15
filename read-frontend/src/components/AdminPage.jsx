@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, Navbar } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import HeaderComponent from './HeaderComponent';
@@ -16,18 +16,19 @@ import { GiBookshelf } from "react-icons/gi";
 import { PiBooksFill } from "react-icons/pi";
 import { RiAdminFill } from "react-icons/ri";
 import { FaBookReader } from "react-icons/fa";
-import AdminTable from './AdminTable';
+import AddStoryComponent from './AddStoryComponent';
 
 
 
 
 
 
+// Component to display admin page, comprising a Sidebar with content options and an area that displays the selected content
 const AdminPage = () => {
 
-  // const [sideContent, setSideContent] = useState(<PropertyManagement viewing={'all'}/>);
+  const [sideContent, setSideContent] = useState(<div/>);
 
-  
+  //Change content depending on buton clicked
   const handleContentChange = (content) => {
     setSideContent(content);
   };
@@ -35,16 +36,18 @@ const AdminPage = () => {
   const navigator = useNavigate();
   return (
     <div>
+     {/* <div style={{backgroundColor:'black', height:'5cqh', width:'100%'}}></div> */}
      
-     
-    <div style={{display:'flex', gap:'10cqw', minHeight:'100cqh'}} >
+    <div style={{display:'flex', minHeight:'100cqh'}} >
         
 
-       <div className='primary-colour' >
-          <Sidebar width='15cqw' className='primary-colour' style={{paddingTop:'3cqh'}}>
+       <div className='' >
+          <Sidebar width='15cqw' className='primary-colour ' style={{paddingTop:'3cqh'}}>
           <Menu >
-            <div className='text-center justify-content-center' style={{paddingTop:'2cqh', paddingBottom:'2cqh'}}>
-            <img src='images/ReadLogo.jpeg' style={{width:'10cqw', justifyContent:'center', height:'auto'}}></img>
+
+            {/* logo Component - at the moment changes content to blank screen - don't leave this in final product */}
+            <div className='text-center justify-content-center' style={{paddingTop:'2cqh', paddingBottom:'2cqh', cursor:'pointer'}} onClick={()=>handleContentChange(<div/>)}>
+            <img src="/images/ReadLogoNoBG.png" style={{width:'10cqw', justifyContent:'center', height:'auto'}} ></img>
             </div>
 
             
@@ -53,7 +56,7 @@ const AdminPage = () => {
               <MenuItem icon={<FaBook/>} >Easy</MenuItem>
               <MenuItem icon={<PiBooksFill/>} >Medium</MenuItem>
               <MenuItem icon={<ImBooks/>} >Hard</MenuItem>
-              <MenuItem icon={<IoAddCircle />} >Add Story</MenuItem>
+              <MenuItem icon={<IoAddCircle />} onClick={()=>{handleContentChange(<AddStoryComponent/>)} }>Add Story</MenuItem>
             </SubMenu>
             <SubMenu label='Users'>
                 <MenuItem icon={<FaBookReader />}>Readers</MenuItem>
@@ -79,13 +82,14 @@ const AdminPage = () => {
           </div>
          
 
-          <div style={{paddingTop:'3cqh'}} className='justify-content-center'>
-            <AdminTable viewing={""}/>
+          <div style={{paddingTop:'10cqh', width:'100%'}} className='justify-content-center'>
+           {sideContent}
           </div>
+
 
     
 
-       
+  
       
 
       

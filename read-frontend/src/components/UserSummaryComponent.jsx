@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import StoryCircle from './StoryCircle';
 
+//Component for displaying summary user data in circles on main User screen
 const UserSummaryComponent = ({ user, mostrecentstory }) => {
   return (
     <Container className="text-center">

@@ -5,7 +5,7 @@ import HeaderComponent from './HeaderComponent';
 import { useNavigate } from 'react-router-dom';
 
 
-
+//Component for allowing a User to log in
 const LoginComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +21,7 @@ const LoginComponent = () => {
   };
 
   const handleSubmit = () => {
-    // Handle login form submission
+    // Handle login form submission - just a redirect for now
     navigator('/');
   };
 

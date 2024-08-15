@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Card, Container, Row, Col, Image } from 'react-bootstrap';
 import { FaInfo, FaBook, FaPlus } from 'react-icons/fa'; // Importing the icons
 
+//Component for displaying Story card and user options for interacting with Stories
 const StoryCard = ({ story }) => {
+  
   const [hovered, setHovered] = useState(false); // State to manage hover
 
   return (
@@ -25,6 +27,7 @@ const StoryCard = ({ story }) => {
         alt={story.title}
         style={{ height: '100%', width: '100%', objectFit: 'cover' }}
       />
+      {/* Originally had text in bottom half - still a viable option */}
       {/* <Card.Body style={{ padding: '0.75rem', height: '60%' }}>
         <Container fluid>
           <Row>
@@ -52,6 +55,8 @@ const StoryCard = ({ story }) => {
           </Row>
         </Container>
       </Card.Body> */}
+      
+      {/* Display interaction options if user hovers over the card */}
       {hovered && (
         <div
           style={{

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image } from 'react-bootstrap';
 
+//Component for displaying a Story in a circle
 const StoryCircle = ({ story }) => {
   return (
     <div
