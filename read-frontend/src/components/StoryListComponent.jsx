@@ -1,8 +1,6 @@
 // Component for displaying Stories for Users to choose from
 import {React, useState, useEffect} from 'react';
-import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
-import StoryCard from './StoryCard';
 import UserSummaryComponent from './UserSummaryComponent';
 import {Container,Row} from 'react-bootstrap'
 import StoryCarousel from './StoryCarousel';
@@ -10,6 +8,7 @@ import StoryCarousel from './StoryCarousel';
 const dummydata = {
   "stories": [
     {
+      "id":"1",
       "title": "The Lost Puppy",
       "description": "A heartwarming tale of a puppy finding its way home.",
       "difficulty": "easy",

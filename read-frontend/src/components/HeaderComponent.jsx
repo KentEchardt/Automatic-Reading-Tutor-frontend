@@ -60,7 +60,7 @@ const HeaderComponent = () => {
 
     {/* Centered Logo */}
     <Navbar.Brand href="/" className='justify-content-center mx-auto' >
-      <img src="images/ReadLogo.jpeg" className="d-inline-block align-top navbar-logo" alt="Logo" />
+      <img src="/images/ReadLogo.jpeg" className="d-inline-block align-top navbar-logo" alt="Logo" />
     </Navbar.Brand>
 
     {/* Profile Menu */}

@@ -1,6 +1,5 @@
 import React from 'react'
 import HeaderComponent from './HeaderComponent'
-import FooterComponent from './FooterComponent'
 import StoryListComponent from './StoryListComponent'
 
 //Component for displaying the Reader main page

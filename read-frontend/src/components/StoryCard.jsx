@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { Card, Container, Row, Col, Image } from 'react-bootstrap';
 import { FaInfo, FaBook, FaPlus } from 'react-icons/fa'; // Importing the icons
+import { useNavigate } from 'react-router-dom';
 
 //Component for displaying Story card and user options for interacting with Stories
 const StoryCard = ({ story }) => {
   
   const [hovered, setHovered] = useState(false); // State to manage hover
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(`/story/${story.id}`);
+  };
 
   return (
     <Card
@@ -75,7 +80,7 @@ const StoryCard = ({ story }) => {
         >
           <div style={{ marginBottom: '4cqh', cursor: 'pointer' }}>
             <FaBook size={24} />
-            <span style={{ marginLeft: '8px' }}>Read Story</span>
+            <span style={{ marginLeft: '8px' }} onClick={handleClick} >Read Story</span>
           </div>
           <div style={{ cursor: 'pointer' }}>
             <FaPlus size={24} />

@@ -7,6 +7,7 @@ import TeacherMainPage from './components/TeacherMainPage'
 import LoginComponent from './components/LoginComponent'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import DemoTest from './components/DemoTest'
+import StoryReader from './components/StoryReader'
 
 function App() {
   
@@ -21,7 +22,7 @@ function App() {
         <Route path = "/" element={<MainPageComponent/>}></Route>
         <Route path = "/admin" element= {<AdminPage/>}></Route>
         <Route path = "/teacher" element= {<TeacherMainPage/>}></Route>
-        <Route path="/demo" element={<DemoTest/>}></Route>
+        <Route path="/story/:storyId" element={<StoryReader />} />
         
       </Routes>
       <FooterComponent/>
