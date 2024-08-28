@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 
+//Component for recording user audio
 const AudioRecorder = ({ onStart, onStop }) => {
   const [recordedUrl, setRecordedUrl] = useState('');
   const mediaStream = useRef(null);
