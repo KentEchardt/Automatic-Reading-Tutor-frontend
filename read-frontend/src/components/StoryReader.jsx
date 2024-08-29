@@ -4,55 +4,48 @@ import { Container, Button, Row, Col } from 'react-bootstrap';
 import HeaderComponent from './HeaderComponent';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
-import { uploadAudio } from '../services/Stories'; 
-
+import { getStoryById, uploadAudio } from '../services/Stories';
 
 const StoryReader = () => {
-  const dummydata = {
-    stories: [
-      {
-        id: "1",
-        title: "The Lost Puppy",
-        description: "A heartwarming tale of a puppy finding its way home.",
-        difficulty: "easy",
-        image: "images/puppy.jpeg",
-        fulltext: `
-On a bright and sunny morning, a little puppy named Max woke up full of energy. Max was a fluffy golden retriever with the softest fur and the most curious eyes. He lived with his family in a cozy house at the end of Maple Street.
-
-Every day, Max loved to play in the backyard, chasing butterflies and rolling around in the grass. But today, something felt different. As he bounded out of the house, a butterfly fluttered by, and Max couldn't resist the urge to follow it. The butterfly danced on the breeze, leading Max further and further away from his home.
-
-Max followed the butterfly past the big oak tree, through the tall grass, and over a little hill. He was having so much fun that he didn't notice how far he'd gone. When the butterfly finally flew away, Max looked around and realized he was all alone. The houses, trees, and streets around him were unfamiliar.
-
-Max felt a pang of worry. He was lost!
-
-He wandered around, trying to find his way back, but everything looked different. He missed his family, his bed, and his favorite toys. As the day went on, Max grew tired and hungry. His little legs were sore from walking, and he wished he had never left his backyard.
-
-Just as Max was about to give up, he heard a familiar sound. It was the voice of a little girl calling out, "Max! Max, where are you?"
-
-Max's ears perked up. He knew that voice! It was Emma, his best friend and the girl who loved him most. Max barked as loud as he could and ran towards the sound.
-
-Emma had been searching for Max all afternoon. She was so worried when she couldn't find him in the backyard. She called and called, hoping that Max would hear her. And when she finally heard his bark, her heart leapt with joy.
-
-"Max!" Emma cried out as she saw him running towards her. She knelt down, and Max leaped into her arms, covering her face with happy puppy kisses.
-
-Emma hugged Max tightly. "Oh, Max, I was so worried! Let's go home."
-
-With Max safely in her arms, Emma carried him all the way back to their house on Maple Street. As soon as they got home, Max curled up in his favorite spot and fell fast asleep, dreaming of his adventure but happy to be home.
-
-From that day on, Max never wandered too far from home again. He knew that his family was always there, ready to love and protect him. And whenever he saw a butterfly, he wagged his tail, remembering the day he got lost—and found his way back to the people who loved him.`,
-      },
-    ],
-  };
-
   const { storyId } = useParams();
-  const story = dummydata.stories.find(story => story.id === storyId);
-
+  const [story, setStory] = useState(null);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
+
+  // Fetch story data
+  useEffect(() => {
+    const fetchStory = async () => {
+      try {
+        const response = await getStoryById(storyId);
+        setStory(response);
+      } catch (error) {
+        console.error('Error fetching story:', error);
+      }
+    };
+
+    fetchStory();
+  }, [storyId]);
+
+  // Scroll to current sentence
+  useEffect(() => {
+    if (boxRef.current && sentenceRefs.current[currentSentenceIndex]) {
+      const container = boxRef.current;
+      const currentSentence = sentenceRefs.current[currentSentenceIndex];
+      container.scrollTop = currentSentence.offsetTop - container.offsetTop;
+    }
+  }, [currentSentenceIndex]);
+
+  // Reset view on component mount
+  useEffect(() => {
+    if (boxRef.current) {
+      boxRef.current.scrollTop = 0;
+      setCurrentSentenceIndex(0);
+    }
+  }, [story]);
 
   if (!story) {
     return <p>Story not found.</p>;
@@ -86,32 +79,21 @@ From that day on, Max never wandered too far from home again. He knew that his f
     }
   };
 
-  const handleStartFromBeginning = () => {
-    setCurrentSentenceIndex(0);
-  };
-
   const handleStartRecording = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const recorder = new MediaRecorder(stream);
         setMediaRecorder(recorder);
-
+        
         recorder.ondataavailable = async (e) => {
+          // Ensure this handler is set, but actual upload happens in handleStopRecording
           if (e.data.size > 0) {
             const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
-            // Uncomment for actual API call
-            // setIsUploading(true);
-            // try {
-            //   await uploadAudio(recordedBlob, sentences[currentSentenceIndex]);
-            // } catch (error) {
-            //   console.error('Upload failed', error);
-            // } finally {
-            //   setIsUploading(false);
-            // }
+            // You might want to store the recordedBlob in state or a ref here if needed
           }
         };
-
+  
         recorder.start();
         setIsRecording(true);
       } catch (error) {
@@ -120,29 +102,54 @@ From that day on, Max never wandered too far from home again. He knew that his f
     }
   };
 
-  const handleStopRecording = () => {
+  const handleStopRecording = async () => {
     if (mediaRecorder) {
-      mediaRecorder.stop();
-      setIsRecording(false);
-      mediaRecorder.stream.getTracks().forEach(track => track.stop()); // Stop all tracks
+      // Set up ondataavailable handler before stopping the recorder
+      mediaRecorder.ondataavailable = async (e) => {
+        if (e.data.size > 0) {
+          const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
+  
+          setIsUploading(true);
+          try {
+            const isMatch = await uploadAudio("1", recordedBlob, sentences[currentSentenceIndex]);
+  
+            if (isMatch) {
+              // Move to the next sentence if the audio matches
+              if (currentSentenceIndex < sentences.length - 1) {
+                setCurrentSentenceIndex(currentSentenceIndex + 1);
+              }
+            } else {
+              // Show alert if the pronunciation was incorrect
+              alert('Pronunciation was incorrect. Please try again.');
+            }
+          } catch (error) {
+            console.error('Upload failed', error);
+          } finally {
+            setIsUploading(false);
+          }
+        }
+      };
+  
+      try {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          setIsRecording(false);
+          mediaRecorder.stream.getTracks().forEach(track => track.stop()); // Stop all tracks
+          
+          // Request data if not already available
+          // if (mediaRecorder.requestData) {
+          //   mediaRecorder.requestData();
+          // }
+        } else if (mediaRecorder.state === 'inactive') {
+          console.warn('MediaRecorder is inactive.');
+        }
+      } catch (error) {
+        console.error('Error stopping recording:', error);
+      }
     }
   };
-
-  useEffect(() => {
-    if (boxRef.current && sentenceRefs.current[currentSentenceIndex]) {
-      const container = boxRef.current;
-      const currentSentence = sentenceRefs.current[currentSentenceIndex];
-      container.scrollTop = currentSentence.offsetTop - container.offsetTop;
-    }
-  }, [currentSentenceIndex]);
-
-  useEffect(() => {
-    if (boxRef.current) {
-      boxRef.current.scrollTop = 0;
-      handleStartFromBeginning();
-    }
-  }, []);
-
+  
+  
   return (
     <div>
       <HeaderComponent />
@@ -194,7 +201,7 @@ From that day on, Max never wandered too far from home again. He knew that his f
               <Button onClick={handlePreviousSentence} variant="secondary" style={{ marginBottom: '10px' }}>
                 Previous
               </Button>
-              <Button onClick={handleStartFromBeginning} variant="secondary">
+              <Button onClick={() => setCurrentSentenceIndex(0)} variant="secondary">
                 Start
               </Button>
               {isRecording && (
@@ -213,3 +220,4 @@ From that day on, Max never wandered too far from home again. He knew that his f
 };
 
 export default StoryReader;
+ 

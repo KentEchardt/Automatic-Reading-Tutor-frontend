@@ -3,11 +3,12 @@ import axios from 'axios';
 const baseUrl = "http://127.0.0.1:8000/"
 
 
-export const uploadAudio = async (sessionId, audioFile) => {
+export const uploadAudio = async (sessionId, audioFile, matchingText) => {
   try {
     const formData = new FormData();
     formData.append('session_id', sessionId);
     formData.append('audio_file', audioFile);
+    formData.append('matching_text', matchingText)
 
     const response = await axios.post(baseUrl+'match-audio/', formData, {
       headers: {
@@ -16,7 +17,7 @@ export const uploadAudio = async (sessionId, audioFile) => {
     });
 
     console.log('Response:', response.data);
-    return response;
+    return response.data.match;
   } catch (error) {
     console.error('Error uploading audio file:', error);
   }
