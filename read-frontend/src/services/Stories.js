@@ -59,3 +59,25 @@ export const createStory = async (storyData) => {
 };
 
 
+// Get all story listings (story id, difficulty level)
+export const getStoryListings = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}stories/get_story_listings/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting story listings:', error);
+    return [];
+  }
+};
+
+// Get a specific story cover by ID (story title and image)
+export const getStoryCover = async (storyId) => {
+  try {
+    const response = await axios.get(`${baseUrl}stories/${storyId}/get_story_cover/`);
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error('Error getting story by ID:', error);
+    return null;
+  }
+};

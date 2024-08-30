@@ -48,7 +48,10 @@ const StoryReader = () => {
   }, [story]);
 
   if (!story) {
-    return <p>Story not found.</p>;
+    return <div style={{backgroundColor:'black', color:'white'}}>
+      <HeaderComponent/>
+      <div style={{paddingTop:'40cqh', paddingBottom:'40cqh', textAlign:'center'}}><h1>Loading...</h1></div>
+      </div>; 
   }
 
   const sentences = story.fulltext.split('. ').map(sentence => sentence.trim());

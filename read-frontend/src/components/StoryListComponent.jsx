@@ -4,6 +4,11 @@ import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
 import UserSummaryComponent from './UserSummaryComponent';
 import {Container,Row} from 'react-bootstrap'
 import StoryCarousel from './StoryCarousel';
+import { getStoryListings } from '../services/Stories';
+
+
+
+
 
 const dummydata = {
   "stories": [
@@ -100,7 +105,26 @@ const responsiveSettings = {
 
 //Component for displaying all story carousels
 const StoryListComponent = () => {
-  const easyStories = dummydata.stories.filter(story => story.difficulty === 'easy');
+
+  const [storyListings, setStoryListings] = useState([])
+
+
+// Fetch story listings data
+useEffect(() => {
+  const fetchStoryListings = async () => {
+    try {
+      const response = await getStoryListings();
+      setStoryListings(response);
+    } catch (error) {
+      console.error('Error fetching story listings:', error);
+    }
+  };
+
+  fetchStoryListings();
+}, []);
+
+
+  const easyStories = storyListings.filter(story => story.difficulty_level === 'easy');
   const mediumStories = dummydata.stories.filter(story => story.difficulty === 'medium');
   const hardStories = dummydata.stories.filter(story => story.difficulty === 'hard');
 

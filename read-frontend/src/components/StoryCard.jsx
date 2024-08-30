@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Container, Row, Col, Image } from 'react-bootstrap';
 import { FaInfo, FaBook, FaPlus } from 'react-icons/fa'; // Importing the icons
 import { useNavigate } from 'react-router-dom';
+import { getStoryCover } from '../services/Stories';
 
 //Component for displaying Story card and user options for interacting with Stories
 const StoryCard = ({ story }) => {
   
   const [hovered, setHovered] = useState(false); // State to manage hover
+  const [storyTitle, setStoryTitle] = useState('') 
+  const [storyImageData, setStoryImageData] = useState(null)
+  const [contentType, setContentType] = useState(null)
+
   const navigate = useNavigate();
+
+  // Fetch story listings data
+useEffect(() => {
+  const fetchStoryCover = async () => {
+    try {
+      const response = await getStoryCover(story.id);
+      setStoryImageData(response.image_data);
+      setStoryTitle(response.title);
+      setContentType(response.contentType);
+    } catch (error) {
+      console.error('Error fetching story cover:', error);
+    }
+  };
+
+  fetchStoryCover();
+}, []);
+
+
+// Function to convert base64 string to image URL
+const base64ToImage = (base64String, contentType) => {
+  return `data:${contentType};base64,${base64String}`;
+};
+
   const handleClick = () => {
     navigate(`/story/${story.id}`);
   };
+
 
   return (
     <Card
@@ -28,8 +57,8 @@ const StoryCard = ({ story }) => {
       onMouseLeave={() => setHovered(false)}
     >
       <Image
-        src={story.image}
-        alt={story.title}
+         src={base64ToImage(storyImageData, contentType)}
+         alt={storyTitle}
         style={{ height: '100%', width: '100%', objectFit: 'cover' }}
       />
       {/* Originally had text in bottom half - still a viable option */}
