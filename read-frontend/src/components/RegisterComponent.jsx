@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { createUser, getUserExists } from '../services/users'; // Update with your actual service
+import { createUser, getUserExists } from '../services/users'; 
 import HeaderPlain from './HeaderPlain';
 
+
+// Component for registering new users
 const RegisterComponent = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');

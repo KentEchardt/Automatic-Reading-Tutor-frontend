@@ -7,6 +7,7 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById, uploadAudio } from '../services/Stories';
 import PronunciationModal from './PronunciationModal';
 
+//Component for allowing user to read stories
 const StoryReader = () => {
   const { storyId } = useParams();
   const [story, setStory] = useState(null);

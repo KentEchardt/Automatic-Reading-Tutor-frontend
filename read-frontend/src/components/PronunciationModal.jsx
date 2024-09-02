@@ -4,6 +4,7 @@ import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { RiSpeakLine } from "react-icons/ri";
 
+//Component for assisting user with word pronunciation
 const PronunciationModal = ({ show, onHide, sentence, onAudioUpload }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
