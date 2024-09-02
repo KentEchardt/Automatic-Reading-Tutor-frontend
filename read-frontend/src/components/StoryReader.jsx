@@ -5,6 +5,7 @@ import HeaderComponent from './HeaderComponent';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById, uploadAudio } from '../services/Stories';
+import PronunciationModal from './PronunciationModal';
 
 const StoryReader = () => {
   const { storyId } = useParams();
@@ -13,8 +14,12 @@ const StoryReader = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [incorrectPronunciation, setIncorrectPronunciation] = useState(false);
+  const [selectedSentence, setSelectedSentence] = useState(null);
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
+
 
   // Fetch story data
   useEffect(() => {
@@ -54,7 +59,12 @@ const StoryReader = () => {
       </div>; 
   }
 
-  const sentences = story.fulltext.split('. ').map(sentence => sentence.trim());
+  const sentences = story.fulltext.match(/[^.!?]*[.!?]/g).map(sentence => sentence.trim());
+
+  const handleSentenceClick = (index) => {
+    setSelectedSentence(sentences[index]);
+    setShowModal(true);
+  };
 
   const highlightedText = sentences.map((sentence, index) => (
     <span
@@ -64,17 +74,15 @@ const StoryReader = () => {
         color: index === currentSentenceIndex ? 'yellow' : 'inherit',
         display: 'block',
         paddingBottom: '10px',
+        cursor: incorrectPronunciation && index===currentSentenceIndex ? 'pointer' : 'text',
       }}
+      onClick={() => incorrectPronunciation && index===currentSentenceIndex && handleSentenceClick(index)}
     >
-      {sentence + (index !== sentences.length - 1 ? '. ' : '')}
+      {sentence}
     </span>
   ));
 
-  const handleNextSentence = () => {
-    if (currentSentenceIndex < sentences.length - 1) {
-      setCurrentSentenceIndex(currentSentenceIndex + 1);
-    }
-  };
+  
 
   const handlePreviousSentence = () => {
     if (currentSentenceIndex > 0) {
@@ -82,6 +90,7 @@ const StoryReader = () => {
     }
   };
 
+  //Handler function for when user starts recording
   const handleStartRecording = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
@@ -90,10 +99,9 @@ const StoryReader = () => {
         setMediaRecorder(recorder);
         
         recorder.ondataavailable = async (e) => {
-          // Ensure this handler is set, but actual upload happens in handleStopRecording
+          
           if (e.data.size > 0) {
             const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
-            // You might want to store the recordedBlob in state or a ref here if needed
           }
         };
   
@@ -105,31 +113,43 @@ const StoryReader = () => {
     }
   };
 
+  //Handler function for uploading audio and checking pronunciation
+  const handleUpload = async (recordedBlob) => {
+    try {
+      const isMatch = await uploadAudio("1", recordedBlob, sentences[currentSentenceIndex]);
+
+      if (isMatch) {
+        // Move to the next sentence if the audio matches
+        if (currentSentenceIndex < sentences.length - 1) {
+          setCurrentSentenceIndex(currentSentenceIndex + 1);
+          setIncorrectPronunciation(false)
+          setShowModal(false)
+        }
+        else{
+          //Logic for when story is successfully completed
+        }
+      } else {
+        // Show alert if the pronunciation was incorrect
+        alert('Pronunciation was incorrect. Please try again.');
+        setIncorrectPronunciation(true)
+      }
+    } catch (error) {
+      console.error('Upload failed', error);
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  //Handler function for when the user stops recording
   const handleStopRecording = async () => {
     if (mediaRecorder) {
-      // Set up ondataavailable handler before stopping the recorder
+      
       mediaRecorder.ondataavailable = async (e) => {
         if (e.data.size > 0) {
           const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
   
           setIsUploading(true);
-          try {
-            const isMatch = await uploadAudio("1", recordedBlob, sentences[currentSentenceIndex]);
-  
-            if (isMatch) {
-              // Move to the next sentence if the audio matches
-              if (currentSentenceIndex < sentences.length - 1) {
-                setCurrentSentenceIndex(currentSentenceIndex + 1);
-              }
-            } else {
-              // Show alert if the pronunciation was incorrect
-              alert('Pronunciation was incorrect. Please try again.');
-            }
-          } catch (error) {
-            console.error('Upload failed', error);
-          } finally {
-            setIsUploading(false);
-          }
+          handleUpload(recordedBlob);
         }
       };
   
@@ -138,11 +158,7 @@ const StoryReader = () => {
           mediaRecorder.stop();
           setIsRecording(false);
           mediaRecorder.stream.getTracks().forEach(track => track.stop()); // Stop all tracks
-          
-          // Request data if not already available
-          // if (mediaRecorder.requestData) {
-          //   mediaRecorder.requestData();
-          // }
+      
         } else if (mediaRecorder.state === 'inactive') {
           console.warn('MediaRecorder is inactive.');
         }
@@ -218,6 +234,13 @@ const StoryReader = () => {
           </Row>
         </Container>
       </div>
+
+      <PronunciationModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        sentence={selectedSentence}
+        onAudioUpload={handleUpload}
+      />
     </div>
   );
 };

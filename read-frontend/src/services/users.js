@@ -45,3 +45,15 @@ export const createUser = async (userData) => {
     return null; 
   }
 };
+
+
+// Check if user exists (for registration)
+export const getUserExists = async (username) => {
+  try {
+    const response = await axios.get(`${baseUrl}users/check-username/${username}`);
+    return response.data.exists;
+  } catch (error) {
+    console.error('Error getting user by username:', error);
+    return null; 
+  }
+};
