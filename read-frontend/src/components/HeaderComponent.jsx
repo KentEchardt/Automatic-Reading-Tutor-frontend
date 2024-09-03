@@ -51,9 +51,7 @@ const HeaderComponent = () => {
         <Dropdown.Toggle as={HamburgerToggle} id="dropdown-autoclose-true">
         </Dropdown.Toggle>
         <Dropdown.Menu align={{ lg: 'end' }} style={{ right: 'auto', left: '0' }}>
-        <Dropdown.Item href="#">Settings</Dropdown.Item>
-        <Dropdown.Item href="#">Contact Us</Dropdown.Item>
-              
+        <Dropdown.Item href="#">Settings</Dropdown.Item>      
         </Dropdown.Menu>
       </Dropdown>
     </Nav>
