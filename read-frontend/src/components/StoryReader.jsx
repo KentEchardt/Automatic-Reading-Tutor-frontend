@@ -4,7 +4,8 @@ import { Container, Button, Row, Col } from 'react-bootstrap';
 import HeaderComponent from './HeaderComponent';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
-import { getStoryById, uploadAudio } from '../services/Stories';
+import { getStoryById } from '../services/Stories';
+import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
 
 //Component for allowing user to read stories

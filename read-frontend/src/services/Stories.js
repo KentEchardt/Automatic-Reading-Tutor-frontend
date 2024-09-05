@@ -1,33 +1,11 @@
-import axios from 'axios';
+import apiClient from './auth';
 
-const baseUrl = "http://127.0.0.1:8000/"
-
-
-export const uploadAudio = async (sessionId, audioFile, matchingText) => {
-  try {
-    const formData = new FormData();
-    formData.append('session_id', sessionId);
-    formData.append('audio_file', audioFile);
-    formData.append('matching_text', matchingText)
-
-    const response = await axios.post(baseUrl+'match-audio/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('Response:', response.data);
-    return response.data.match;
-  } catch (error) {
-    console.error('Error uploading audio file:', error);
-  }
-};
-
+const baseUrl = "http://127.0.0.1:8000/";
 
 // Get all stories
 export const getAllStories = async () => {
   try {
-    const response = await axios.get(`${baseUrl}stories/`);
+    const response = await apiClient.get(`${baseUrl}stories/`);
     return response.data;
   } catch (error) {
     console.error('Error getting stories:', error);
@@ -35,10 +13,10 @@ export const getAllStories = async () => {
   }
 };
 
-// Get a specific story by ID 
+// Get a specific story by ID
 export const getStoryById = async (storyId) => {
   try {
-    const response = await axios.get(`${baseUrl}stories/${storyId}/`);
+    const response = await apiClient.get(`${baseUrl}stories/${storyId}/`);
     return response.data;
   } catch (error) {
     console.error('Error getting story by ID:', error);
@@ -46,8 +24,7 @@ export const getStoryById = async (storyId) => {
   }
 };
 
-
-// Create a new story (requires appropriate authorization)
+// Create a new story (keeping axios)
 export const createStory = async (storyData) => {
   try {
     const response = await axios.post(`${baseUrl}stories/`, storyData);
@@ -58,11 +35,10 @@ export const createStory = async (storyData) => {
   }
 };
 
-
-// Get all story listings (story id, difficulty level)
+// Get all story listings
 export const getStoryListings = async () => {
   try {
-    const response = await axios.get(`${baseUrl}stories/get_story_listings/`);
+    const response = await apiClient.get(`${baseUrl}stories/get_story_listings/`);
     return response.data;
   } catch (error) {
     console.error('Error getting story listings:', error);
@@ -70,11 +46,11 @@ export const getStoryListings = async () => {
   }
 };
 
-// Get a specific story cover by ID (story title and image)
+// Get a specific story cover by ID
 export const getStoryCover = async (storyId) => {
   try {
-    const response = await axios.get(`${baseUrl}stories/${storyId}/get_story_cover/`);
-    console.log(response.data)
+    const response = await apiClient.get(`${baseUrl}stories/${storyId}/get_story_cover/`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error getting story by ID:', error);
