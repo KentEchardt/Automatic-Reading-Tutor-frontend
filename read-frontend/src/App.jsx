@@ -8,26 +8,38 @@ import LoginComponent from './components/LoginComponent'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import StoryReader from './components/StoryReader'
 import RegisterComponent from './components/RegisterComponent'
+import ProtectedRoute from './features/ProtectedRoute'// Import the ProtectedRoute component
 
 function App() {
-  
-
   return (
     <>
-    
       <Routes>
         <Route path='/register' element={<RegisterComponent/>}></Route>
-        <Route path = "/login" element= {<LoginComponent/>}></Route>
+        <Route path="/login" element={<LoginComponent/>}></Route>
         <Route path="/privacy-policy" element={<PrivacyPolicy/>}></Route>
-        <Route path = "/" element={<MainPageComponent/>}></Route>
-        <Route path = "/admin" element= {<AdminPage/>}></Route>
-        <Route path = "/teacher" element= {<TeacherMainPage/>}></Route>
-        <Route path="/story/:storyId" element={<StoryReader />} />
+      
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={
+          <ProtectedRoute component={AdminPage} allowedRoles={['admin']} />
+        }></Route>
+
+        {/* Teacher Routes */}
+        <Route path="/teacher" element={
+          <ProtectedRoute component={TeacherMainPage} allowedRoles={['teacher']} />
+        }></Route>
         
+        {/* Reader Routes */}
+        <Route path="/" element={
+          <ProtectedRoute component={MainPageComponent} allowedRoles={['reader']} />
+        }></Route>
+        <Route path="/story/:storyId" element={
+          <ProtectedRoute component={StoryReader} allowedRoles={['reader']} />
+        }></Route>
+        
+
       </Routes>
       <FooterComponent/>
-
-
     </>
   )
 }

@@ -1,13 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import StoryCircle from './StoryCircle';
+import { getReadingLevel, getUsername } from '../services/users';
+import { getMostRecentStory, getTotalStoriesRead } from '../services/readingsession';
 
 //Component for displaying summary user data in circles on main User screen
-const UserSummaryComponent = ({ user, mostrecentstory }) => {
+const UserSummaryComponent = () => {
+
+  const [username, setUsername] = useState('')
+  const [readingLevel, setReadingLevel] = useState(0)
+  const [totalStoriesRead, setTotalStoriesRead] = useState(0)
+  const [mostRecentStory, setMostRecentStory] = useState(null)
+
+  // Fetch username
+  useEffect(() => {
+  const fetchUsername = async () => {
+    try {
+      const response = await getUsername();
+      setUsername(response);
+    } catch (error) {
+      console.error('Error fetching username:', error);
+    }
+  };
+
+  fetchUsername();
+}, []);
+
+  // Fetch reading level
+  useEffect(() => {
+    const fetchReadingLevel = async () => {
+      try {
+        const response = await getReadingLevel();
+        setReadingLevel(response);
+      } catch (error) {
+        console.error('Error fetching reading level:', error);
+      }
+    };
+  
+    fetchReadingLevel();
+  }, []);
+
+
+    // Fetch total stories read
+  useEffect(() => {
+    const fetchTotalStoriesRead = async () => {
+      try {
+        const response = await getTotalStoriesRead();
+        setTotalStoriesRead(response);
+      } catch (error) {
+        console.error('Error fetching total stories read:', error);
+      }
+    };
+  
+    fetchTotalStoriesRead();
+  }, []);
+
+    // Fetch most recent story read
+    useEffect(() => {
+      const fetchMostRecentStory = async () => {
+        try {
+          const response = await getMostRecentStory();
+          setMostRecentStory(response);
+        } catch (error) {
+          console.error('Error fetching most recent story:', error);
+          setMostRecentStory(null);
+        }
+      };
+    
+      fetchMostRecentStory();
+    }, []);
+  
+
+
   return (
     <Container className="text-center">
         <Row style={{ marginBottom:'10cqh'}}>
-           <h2 >{user.username}</h2> 
+           <h2 >{username}</h2> 
         </Row>
       
       <Row className="justify-content-center align-items-end">
@@ -27,11 +95,11 @@ const UserSummaryComponent = ({ user, mostrecentstory }) => {
               cursor: 'pointer'
             }}
           >
-            <p style={{ fontSize: '1rem' }}>Reading Level: {user.readingLevel}</p>
+            <p style={{ fontSize: '1rem' }}>Reading Level: {readingLevel}</p>
           </div>
         </Col>
         <Col xs={4} className="d-flex justify-content-center" style={{ transform: 'translateY(-10%)' }}>
-          <StoryCircle story={mostrecentstory} />
+          <StoryCircle story={mostRecentStory} />
         </Col>
         <Col xs={4} className="d-flex justify-content-center">
           <div
@@ -49,7 +117,7 @@ const UserSummaryComponent = ({ user, mostrecentstory }) => {
               cursor: 'pointer'
             }}
           >
-            <p style={{ fontSize: '1rem' }}>Stories Read: {user.totalStoriesRead}</p>
+            <p style={{ fontSize: '1rem' }}>Stories Read: {totalStoriesRead}</p>
           </div>
         </Col>
       </Row>

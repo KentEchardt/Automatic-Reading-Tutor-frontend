@@ -1,3 +1,4 @@
+import axios from 'axios';
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/"; 
@@ -42,17 +43,44 @@ export const createUser = async (userData) => {
     return response.data;
   } catch (error) {
     console.error('Error creating user:', error);
-    return null; 
+    return error; 
   }
 };
 
 // Check if user exists (for registration)
 export const getUserExists = async (username) => {
   try {
-    const response = await apiClient.get(`${baseUrl}users/check-username/${username}`);
+    const response = await axios.get(`${baseUrl}users/check-username/${username}/`);
     return response.data.exists;
   } catch (error) {
     console.error('Error getting user by username:', error);
     return null; 
   }
 };
+
+
+// Get user's username using their token
+export const getUsername = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}users/username/`);
+    return response.data.username;
+  } catch (error) {
+    console.error('Error getting username:', error);
+    return []; 
+  }
+};
+
+
+// Get user's username using their token
+export const getReadingLevel = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}users/readinglevel/`);
+    return response.data.reading_level;
+  } catch (error) {
+    console.error('Error getting reading level:', error);
+    return []; 
+  }
+};
+
+
+

@@ -1,32 +1,32 @@
 import axios from 'axios';
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = "http://localhost:8000/";
 
-// Login function to authenticate and receive JWT tokens
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/token/`, {
-      username,
-      password
-    });
-    
-    const { access, refresh } = response.data;
-    
-    // Store tokens (either in localStorage or cookies)
-    localStorage.setItem("access_token", access);
-    localStorage.setItem("refresh_token", refresh);
-    
-    return response.data;
+      const response = await axios.post(`${API_URL}api/token/`, {
+          username,
+          password
+      });
+      
+      const { access, refresh } = response.data;
+      
+      // Store tokens (either in localStorage or cookies)
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      
+      return response.data;
   } catch (error) {
-    console.error("Login error", error);
+      // Enhanced error handling
+      console.error("Login error:", error.response?.data || error.message);
+      return null; // Return null or handle as needed
   }
 };
-
 // Function to get an access token from refresh token
 const refreshAccessToken = async () => {
   try {
     const refreshToken = localStorage.getItem("refresh_token");
-    const response = await axios.post(`${API_URL}/token/refresh/`, {
+    const response = await axios.post(`${API_URL}api/token/refresh/`, {
       refresh: refreshToken
     });
     

@@ -11,7 +11,7 @@ const RegisterComponent = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('Reader');
+  const [role, setRole] = useState('Reader');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({
     username: '',
@@ -25,26 +25,31 @@ const RegisterComponent = () => {
     setShowPassword(!showPassword);
   };
 
-  function UserExists(username){
-    getUserExists(username).then((response)=>{
+
+  function UserExists(username) {
+    return getUserExists(username)
+      .then((response) => {
         return response;
-    }).catch((error)=>{
+      })
+      .catch((error) => {
         console.error(error);
-    })
+        return false; // Return false in case of an error
+      });
   }
 
-  function validateForm() {
+  const validateForm = async(e)=> {
     let valid = true;
     const newErrors = {};
-
+    const userExists = await UserExists(username);
     if (!username.trim()) {
       newErrors.username = 'Username is required.';
       valid = false;
     } else if (username.length < 3) {
       newErrors.username = 'Username must be at least 3 characters long.';
       valid = false;
-    } else if (!UserExists){
+    } else if (!userExists){
         newErrors.username = 'Username already taken.'
+        valid = false;
     } else {
       newErrors.username = '';
     }
@@ -87,13 +92,13 @@ const RegisterComponent = () => {
     e.preventDefault();
 
     if (validateForm()) {
-      const user = { username, email, password, userType };
+      const user = { username, email, password, role:role.toLowerCase() };
       createUser(user)
         .then(() => {
           setUsername('');
           setEmail('');
           setPassword('');
-          setUserType('Reader');
+          setRole('Reader');
           alert('Registration successful, please log in.');
           navigate('/login');
         })
@@ -154,9 +159,9 @@ const RegisterComponent = () => {
                   </InputGroup>
                 </Form.Group>
 
-                <Form.Group controlId="userType" style={{ marginBottom: '1.5rem' }}>
+                <Form.Group controlId="role" style={{ marginBottom: '1.5rem' }}>
                   <Form.Label>User Type</Form.Label>
-                  <Form.Control as="select" value={userType} onChange={(e) => setUserType(e.target.value)}>
+                  <Form.Control as="select" value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value="Reader">Reader</option>
                     <option value="Teacher">Teacher</option>
                   </Form.Control>

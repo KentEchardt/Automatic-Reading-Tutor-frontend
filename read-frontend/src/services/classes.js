@@ -1,6 +1,6 @@
 import apiClient from './auth';
 
-const baseUrl = 'http://localhost:8000/api/'; 
+const baseUrl = 'http://localhost:8000/'; 
 
 // Get all classes
 export const getAllClasses = async () => {

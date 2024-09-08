@@ -4,6 +4,8 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import HeaderComponent from './HeaderComponent';
 import { useNavigate } from 'react-router-dom';
 import HeaderPlain from './HeaderPlain';
+import { login } from '../services/auth';
+import { getUserExists } from '../services/users';
 
 
 //Component for allowing a User to log in
@@ -21,11 +23,44 @@ const LoginComponent = () => {
     setRememberMe(!rememberMe);
   };
 
-  const handleSubmit = () => {
-    // Handle login form submission - just a redirect for now
-    navigator('/');
+
+  function UserExists(username) {
+    return getUserExists(username)
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.error(error);
+        return false; // Return false in case of an error
+      });
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const userExists = await UserExists(username);
+    if (userExists) {
+      try {
+        const response = await login(username, password);
+        console.log(response);
+        
+        if (response) {
+          // On successful login, navigate to home or another page
+          navigator('/');
+        } else {
+          // Handle error (e.g., show error message)
+          alert('Login failed. Please check your username and password.');
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        alert('Password Incorrect.');
+      }
+    } else {
+      console.log("User does not exist.");
+    }
   };
 
+  
   return (
     <div>
         <HeaderPlain/>
@@ -43,8 +78,8 @@ const LoginComponent = () => {
             <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Login</h1>
             <Form>
               <Form.Group controlId="username" style={{ marginBottom: '1.5rem' }}>
-                <Form.Label>Email Address</Form.Label>
-                <Form.Control type="text" placeholder="Enter your email address" value={username} onChange={(e) => setUsername(e.target.value)} />
+                <Form.Label>Username</Form.Label>
+                <Form.Control type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} />
               </Form.Group>
               <Form.Group controlId="password" style={{ marginBottom: '1.5rem' }}>
                 <Form.Label>Password</Form.Label>

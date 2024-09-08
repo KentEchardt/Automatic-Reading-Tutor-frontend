@@ -5,75 +5,9 @@ import UserSummaryComponent from './UserSummaryComponent';
 import {Container,Row} from 'react-bootstrap'
 import StoryCarousel from './StoryCarousel';
 import { getStoryListings } from '../services/Stories';
+import { getUsername } from '../services/users';
 
 
-
-
-
-const dummydata = {
-  "stories": [
-    {
-      "id":"1",
-      "title": "The Lost Puppy",
-      "description": "A heartwarming tale of a puppy finding its way home.",
-      "difficulty": "easy",
-      "image": "images/puppy.jpeg"
-    },
-    {
-      "title": "Mystery at the Old Mansion",
-      "description": "A group of kids uncover secrets hidden in an abandoned mansion.",
-      "difficulty": "medium",
-      "image": "images/mystery.jpeg"
-    },
-    {
-      "title": "Journey to the Dragon's Lair",
-      "description": "An epic adventure where a hero battles a dragon.",
-      "difficulty": "hard",
-      "image": "images/dragon.jpeg"
-    },
-    {
-      "title": "The Enchanted Forest",
-      "description": "Discover the magical creatures living in the forest.",
-      "difficulty": "easy",
-      "image": "images/forest.jpeg"
-    },
-    {
-      "title": "The Secret Ingredient",
-      "description": "A cooking competition with a surprising twist.",
-      "difficulty": "medium",
-      "image": "images/cooking.jpeg"
-    },
-    {
-      "title": "Escape from the Underworld",
-      "description": "A daring escape from a dangerous underworld.",
-      "difficulty": "hard",
-      "image": "images/underworld.jpeg"
-    },
-    {
-      "title": "The Space Explorer",
-      "description": "A journey through the stars to discover new planets.",
-      "difficulty": "easy",
-      "image": "images/space.jpeg"
-    },
-    {
-      "title": "The Haunted Library",
-      "description": "A spooky story about a haunted library with mysterious books.",
-      "difficulty": "medium",
-      "image": "images/library.jpeg"
-    },
-    {
-      "title": "Race to the Finish",
-      "description": "An intense race where the winner takes it all.",
-      "difficulty": "hard",
-      "image": "images/race.jpeg"
-    }
-  ],
-  "user": {
-    "username": "<Username>",
-    "readingLevel": "A",
-    "totalStoriesRead": "100",
-  }
-};
 
 const responsiveSettings = {
   desktop: {
@@ -107,6 +41,7 @@ const responsiveSettings = {
 const StoryListComponent = () => {
 
   const [storyListings, setStoryListings] = useState([])
+  const [username, setUsername] = useState('')
 
 
 // Fetch story listings data
@@ -124,15 +59,16 @@ useEffect(() => {
 }, []);
 
 
+
   const easyStories = storyListings.filter(story => story.difficulty_level === 'easy');
-  const mediumStories = dummydata.stories.filter(story => story.difficulty === 'medium');
-  const hardStories = dummydata.stories.filter(story => story.difficulty === 'hard');
+  const mediumStories = storyListings.filter(story => story.difficulty_level === 'medium');
+  const hardStories = storyListings.filter(story => story.difficulty_level === 'hard');
 
   return (
     <div style={{ backgroundColor: 'black', color: 'white' }}>
       
       <div style={{ marginBottom: '5cqh', paddingTop: '10cqh' }}>
-        <UserSummaryComponent user={dummydata.user} mostrecentstory={dummydata.stories[1]} />
+        <UserSummaryComponent user={null} mostrecentstory={null} />
       </div>
 
       <Container fluid style={{ paddingBottom: '10cqh' }}>
@@ -140,7 +76,7 @@ useEffect(() => {
         {/* Recommended Stories Carousel */}
         <Row style={{ height: "auto" }}>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh', }}>Recommended Stories</h3>
-          <StoryCarousel stories={dummydata.stories} responsiveSettings={responsiveSettings} containerClass={"recommended-carousel"}/>
+          <StoryCarousel stories={null} responsiveSettings={responsiveSettings} containerClass={"recommended-carousel"}/>
         </Row>
 
         {/* My List Stories Carousel */}

@@ -34,3 +34,26 @@ export const createReadingSession = async (sessionData) => {
     return null; 
   }
 };
+
+
+// Get user's total stories read using their token
+export const getTotalStoriesRead = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}readingsessions/total-stories-read/`);
+    return response.data.total_stories_read;
+  } catch (error) {
+    console.error('Error getting total stories read:', error);
+    return []; 
+  }
+};
+
+// Get user's most recent story using their token
+export const getMostRecentStory = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}readingsessions/most-recent-story/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting most recent story:', error);
+    return []; 
+  }
+};
