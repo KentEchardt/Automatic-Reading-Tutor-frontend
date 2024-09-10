@@ -13,29 +13,6 @@ export const getAllReadingSessions = async () => {
   }
 };
 
-// Get a user's reading session for a specific story
-export const getUserStorySession = async (userId, storyId) => {
-  try {
-    const response = await apiClient.get(`${baseUrl}readingsessions/by-user/${userId}/story/${storyId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error getting user story session:', error);
-    return null;
-  }
-};
-
-// Create a new reading session (keeping axios)
-export const createReadingSession = async (sessionData) => {
-  try {
-    const response = await axios.post(`${baseUrl}readingsessions/`, sessionData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating reading session:', error);
-    return null; 
-  }
-};
-
-
 // Get user's total stories read using their token
 export const getTotalStoriesRead = async () => {
   try {
@@ -55,5 +32,30 @@ export const getMostRecentStory = async () => {
   } catch (error) {
     console.error('Error getting most recent story:', error);
     return []; 
+  }
+};
+
+export const startSession = async (story_id) => {
+  try {
+    const response = await apiClient.post(`${baseUrl}readingsessions/start-session/`, {
+      story_id,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error starting session:', error);
+    return null; 
+  }
+};
+
+export const endSession = async (session_id, time_reading) => {
+  try {
+    const response = await apiClient.post(`${baseUrl}readingsessions/end-session/`, {
+      session_id,
+      time_reading,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error ending session:', error);
+    return null; 
   }
 };

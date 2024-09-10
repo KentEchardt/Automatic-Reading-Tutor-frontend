@@ -19,6 +19,7 @@ const StoryReader = () => {
   const [showModal, setShowModal] = useState(false);
   const [incorrectPronunciation, setIncorrectPronunciation] = useState(false);
   const [selectedSentence, setSelectedSentence] = useState(null);
+  const [sessionId, setSessionId] = useState(null)
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
 
@@ -36,6 +37,9 @@ const StoryReader = () => {
 
     fetchStory();
   }, [storyId]);
+
+
+  
 
   // Scroll to current sentence
   useEffect(() => {
