@@ -60,7 +60,7 @@ const UserSummaryComponent = () => {
       const fetchMostRecentStory = async () => {
         try {
           const response = await getMostRecentStory();
-          setMostRecentStory(response);
+          setMostRecentStory(response.story_id);
         } catch (error) {
           console.error('Error fetching most recent story:', error);
           setMostRecentStory(null);
@@ -99,7 +99,7 @@ const UserSummaryComponent = () => {
           </div>
         </Col>
         <Col xs={4} className="d-flex justify-content-center" style={{ transform: 'translateY(-10%)' }}>
-          <StoryCircle story={mostRecentStory} />
+          <StoryCircle story_id={mostRecentStory} />
         </Col>
         <Col xs={4} className="d-flex justify-content-center">
           <div

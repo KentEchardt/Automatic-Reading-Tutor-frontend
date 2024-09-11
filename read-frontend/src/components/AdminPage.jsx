@@ -17,6 +17,7 @@ import { PiBooksFill } from "react-icons/pi";
 import { RiAdminFill } from "react-icons/ri";
 import { FaBookReader } from "react-icons/fa";
 import AddStoryComponent from './AddStoryComponent';
+import { FiLogOut } from 'react-icons/fi'; 
 
 
 
@@ -26,6 +27,7 @@ import AddStoryComponent from './AddStoryComponent';
 // Component to display admin page, comprising a Sidebar with content options and an area that displays the selected content
 const AdminPage = () => {
 
+
   const [sideContent, setSideContent] = useState(<div/>);
 
   //Change content depending on buton clicked
@@ -33,7 +35,16 @@ const AdminPage = () => {
     setSideContent(content);
   };
 
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    // Clear user authentication (remove tokens, clear state, etc.)
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    
+    // Redirect to login page
+    navigate('/login');
+  };
   return (
     <div>
      {/* <div style={{backgroundColor:'black', height:'5cqh', width:'100%'}}></div> */}
@@ -77,6 +88,18 @@ const AdminPage = () => {
                 
                 
             </SubMenu>
+
+                        {/* Spacer to push the Sign Out button to the bottom */}
+            <div style={{flex: 1}}></div>
+
+            {/* Sign Out Button */}
+            <MenuItem 
+              icon={<FiLogOut />} 
+              onClick={handleSignOut}
+              style={{marginTop: 'auto', borderTop: '1px solid #ccc'}}
+            >
+              Sign Out
+            </MenuItem>
           </Menu>
         </Sidebar>; 
           </div>

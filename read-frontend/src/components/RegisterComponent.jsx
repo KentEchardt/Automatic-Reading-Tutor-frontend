@@ -26,87 +26,86 @@ const RegisterComponent = () => {
   };
 
 
-  function UserExists(username) {
-    return getUserExists(username)
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        console.error(error);
-        return false; // Return false in case of an error
-      });
+  async function userExists(username) {
+    try {
+      const response = await getUserExists(username);
+  
+      return response;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
-  const validateForm = async(e)=> {
-    let valid = true;
+  const validateForm = async () => {
+    let isValid = true;
     const newErrors = {};
-    const userExists = await UserExists(username);
+
     if (!username.trim()) {
       newErrors.username = 'Username is required.';
-      valid = false;
+      isValid = false;
     } else if (username.length < 3) {
       newErrors.username = 'Username must be at least 3 characters long.';
-      valid = false;
-    } else if (!userExists){
-        newErrors.username = 'Username already taken.'
-        valid = false;
+      isValid = false;
     } else {
-      newErrors.username = '';
+      const exists = await userExists(username);
+      if (exists) {
+        newErrors.username = 'Username already taken.';
+        isValid = false;
+      }
     }
 
     if (!email.trim()) {
       newErrors.email = 'Email is required.';
-      valid = false;
+      isValid = false;
     } else if (!isValidEmail(email.trim())) {
       newErrors.email = 'Invalid email format.';
-      valid = false;
-    } else {
-      newErrors.email = '';
+      isValid = false;
     }
 
     if (!password.trim()) {
       newErrors.password = 'Password is required.';
-      valid = false;
+      isValid = false;
     } else if (!isValidPassword(password.trim())) {
       newErrors.password = 'Password must be at least 8 characters long and contain at least one letter, one digit, and one special character.';
-      valid = false;
-    } else {
-      newErrors.password = '';
+      isValid = false;
     }
 
     setErrors(newErrors);
-    return valid;
-  }
+    return isValid;
+  };
 
-  function isValidEmail(email) {
+  const isValidEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
-  }
+  };
 
-  function isValidPassword(password) {
+  const isValidPassword = (password) => {
     const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordPattern.test(password);
-  }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      const user = { username, email, password, role:role.toLowerCase() };
-      createUser(user)
-        .then(() => {
-          setUsername('');
-          setEmail('');
-          setPassword('');
-          setRole('Reader');
-          alert('Registration successful, please log in.');
-          navigate('/login');
-        })
-        .catch((error) => {
-          console.error('Registration error:', error);
-        });
+    const isValid = await validateForm();
+    if (isValid) {
+      const user = { username, email, password, role: role.toLowerCase() };
+      try {
+        await createUser(user);
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setRole('Reader');
+        alert('Registration successful, please log in.');
+        navigate('/login');
+      } catch (error) {
+        console.error('Registration error:', error);
+        alert('Registration failed. Please try again.');
+      }
     }
   };
+
 
   return (
     <div>
@@ -164,6 +163,7 @@ const RegisterComponent = () => {
                   <Form.Control as="select" value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value="Reader">Reader</option>
                     <option value="Teacher">Teacher</option>
+                    <option value="Admin">Admin</option>
                   </Form.Control>
                 </Form.Group>
 

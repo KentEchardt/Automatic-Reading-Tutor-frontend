@@ -40,7 +40,7 @@ export const startSession = async (story_id) => {
     const response = await apiClient.post(`${baseUrl}readingsessions/start-session/`, {
       story_id,
     });
-    return response.data;
+    return response.data.session_id;
   } catch (error) {
     console.error('Error starting session:', error);
     return null; 
@@ -56,6 +56,19 @@ export const endSession = async (session_id, time_reading) => {
     return response.data;
   } catch (error) {
     console.error('Error ending session:', error);
+    return null; 
+  }
+};
+
+export const pauseSession = async (session_id, time_reading) => {
+  try {
+    const response = await apiClient.post(`${baseUrl}readingsessions/pause-session/`, {
+      session_id,
+      time_reading,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error pausing session:', error);
     return null; 
   }
 };

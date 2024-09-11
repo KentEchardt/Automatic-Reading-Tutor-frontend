@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Button, Row, Col } from 'react-bootstrap';
 import HeaderComponent from './HeaderComponent';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
@@ -7,8 +7,8 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById } from '../services/Stories';
 import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
+import { startSession, endSession, pauseSession } from '../services/readingsession';
 
-//Component for allowing user to read stories
 const StoryReader = () => {
   const { storyId } = useParams();
   const [story, setStory] = useState(null);
@@ -19,12 +19,15 @@ const StoryReader = () => {
   const [showModal, setShowModal] = useState(false);
   const [incorrectPronunciation, setIncorrectPronunciation] = useState(false);
   const [selectedSentence, setSelectedSentence] = useState(null);
-  const [sessionId, setSessionId] = useState(null)
+  const [sessionId, setSessionId] = useState(null);
+  const [readingTime, setReadingTime] = useState(0);
+  const startTimeRef = useRef(null);
+  const accumulatedTimeRef = useRef(0);
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
+  const navigate = useNavigate();
 
-
-  // Fetch story data
+  // Fetch the story and start the session when the component mounts
   useEffect(() => {
     const fetchStory = async () => {
       try {
@@ -35,13 +38,89 @@ const StoryReader = () => {
       }
     };
 
+    const initializeSession = async () => {
+      try {
+        const response = await startSession(storyId);
+        setSessionId(response);
+        startTimeRef.current = Date.now();
+        accumulatedTimeRef.current = 0;
+      } catch (error) {
+        console.error('Error starting session:', error);
+      }
+    };
+
     fetchStory();
+    initializeSession();
+
+    return () => {
+      stopTimerAndPauseSession();
+    };
   }, [storyId]);
 
 
-  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopTimerAndPauseSession();
+      } else {
+        startTimeRef.current = Date.now();
+      }
+    };
 
-  // Scroll to current sentence
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [sessionId]);
+
+  const startTimer = () => {
+    intervalRef.current = setInterval(() => {
+      setReadingTime((prevTime) => prevTime + 1);
+    }, 1000);
+  };
+
+  const calculateElapsedTime = () => {
+    if (startTimeRef.current) {
+      const now = Date.now();
+      const elapsedSinceStart = Math.floor((now - startTimeRef.current) / 1000);
+      return accumulatedTimeRef.current + elapsedSinceStart;
+    }
+    return accumulatedTimeRef.current;
+  };
+
+
+  const stopTimerAndPauseSession = async () => {
+    if (sessionId && startTimeRef.current) {
+      const elapsedTime = calculateElapsedTime();
+      accumulatedTimeRef.current = elapsedTime;
+      startTimeRef.current = null;
+
+      try {
+        await pauseSession(sessionId, elapsedTime);
+      } catch (error) {
+        console.error('Error pausing session:', error);
+      }
+    }
+  };
+
+  const handleCompleteStory = async () => {
+    if (sessionId) {
+      const finalTime = calculateElapsedTime();
+      try {
+        await endSession(sessionId, finalTime);
+        setSessionId(null);
+        accumulatedTimeRef.current = 0;
+        startTimeRef.current = null;
+        navigate("/");
+      } catch (error) {
+        console.error('Error ending session:', error);
+      }
+    }
+  };
+
+
+
   useEffect(() => {
     if (boxRef.current && sentenceRefs.current[currentSentenceIndex]) {
       const container = boxRef.current;
@@ -50,7 +129,6 @@ const StoryReader = () => {
     }
   }, [currentSentenceIndex]);
 
-  // Reset view on component mount
   useEffect(() => {
     if (boxRef.current) {
       boxRef.current.scrollTop = 0;
@@ -59,10 +137,14 @@ const StoryReader = () => {
   }, [story]);
 
   if (!story) {
-    return <div style={{backgroundColor:'black', color:'white'}}>
-      <HeaderComponent/>
-      <div style={{paddingTop:'40cqh', paddingBottom:'40cqh', textAlign:'center'}}><h1>Loading...</h1></div>
-      </div>; 
+    return (
+      <div style={{ backgroundColor: 'black', color: 'white' }}>
+        <HeaderComponent />
+        <div style={{ paddingTop: '40cqh', paddingBottom: '40cqh', textAlign: 'center' }}>
+          <h1>Loading...</h1>
+        </div>
+      </div>
+    );
   }
 
   const sentences = story.fulltext.match(/[^.!?]*[.!?]/g).map(sentence => sentence.trim());
@@ -80,15 +162,13 @@ const StoryReader = () => {
         color: index === currentSentenceIndex ? 'yellow' : 'inherit',
         display: 'block',
         paddingBottom: '10px',
-        cursor: incorrectPronunciation && index===currentSentenceIndex ? 'pointer' : 'text',
+        cursor: incorrectPronunciation && index === currentSentenceIndex ? 'pointer' : 'text',
       }}
-      onClick={() => incorrectPronunciation && index===currentSentenceIndex && handleSentenceClick(index)}
+      onClick={() => incorrectPronunciation && index === currentSentenceIndex && handleSentenceClick(index)}
     >
       {sentence}
     </span>
   ));
-
-  
 
   const handlePreviousSentence = () => {
     if (currentSentenceIndex > 0) {
@@ -96,21 +176,19 @@ const StoryReader = () => {
     }
   };
 
-  //Handler function for when user starts recording
   const handleStartRecording = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const recorder = new MediaRecorder(stream);
         setMediaRecorder(recorder);
-        
+
         recorder.ondataavailable = async (e) => {
-          
           if (e.data.size > 0) {
             const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
           }
         };
-  
+
         recorder.start();
         setIsRecording(true);
       } catch (error) {
@@ -119,52 +197,47 @@ const StoryReader = () => {
     }
   };
 
-  //Handler function for uploading audio and checking pronunciation
   const handleUpload = async (recordedBlob) => {
     try {
-      const isMatch = await uploadAudio("1", recordedBlob, sentences[currentSentenceIndex]);
+      const isMatch = await uploadAudio(sessionId, recordedBlob, sentences[currentSentenceIndex]);
 
       if (isMatch) {
-        // Move to the next sentence if the audio matches
         if (currentSentenceIndex < sentences.length - 1) {
           setCurrentSentenceIndex(currentSentenceIndex + 1);
-          setIncorrectPronunciation(false)
-          setShowModal(false)
-        }
-        else{
-          //Logic for when story is successfully completed
+          setIncorrectPronunciation(false);
+          setShowModal(false);
+        } else {
+          // Show the "Complete Story" button when the last sentence is correct
+          alert('Story completed successfully!');
+          handleCompleteStory();
         }
       } else {
-        // Show alert if the pronunciation was incorrect
         alert('Pronunciation was incorrect. Please try again.');
-        setIncorrectPronunciation(true)
+        setIncorrectPronunciation(true);
       }
     } catch (error) {
       console.error('Upload failed', error);
     } finally {
       setIsUploading(false);
     }
-  }
+  };
 
-  //Handler function for when the user stops recording
   const handleStopRecording = async () => {
     if (mediaRecorder) {
-      
       mediaRecorder.ondataavailable = async (e) => {
         if (e.data.size > 0) {
           const recordedBlob = new Blob([e.data], { type: 'audio/webm' });
-  
+
           setIsUploading(true);
           handleUpload(recordedBlob);
         }
       };
-  
+
       try {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.stop();
           setIsRecording(false);
-          mediaRecorder.stream.getTracks().forEach(track => track.stop()); // Stop all tracks
-      
+          mediaRecorder.stream.getTracks().forEach(track => track.stop());
         } else if (mediaRecorder.state === 'inactive') {
           console.warn('MediaRecorder is inactive.');
         }
@@ -173,8 +246,19 @@ const StoryReader = () => {
       }
     }
   };
-  
-  
+
+
+
+  const handleStartNewSession = async () => {
+    if (sessionId) {
+      await endSession(sessionId, timeReading);
+    }
+    setCurrentSentenceIndex(0);
+    setTimeReading(0);
+    setSessionId(null);
+    fetchSession(); // Start a new session
+  };
+
   return (
     <div>
       <HeaderComponent />
@@ -210,46 +294,38 @@ const StoryReader = () => {
               </Container>
             </Col>
             <Col style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end' }}>
-              <Button
-                onClick={isRecording ? handleStopRecording : handleStartRecording}
-                variant="primary"
-                style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                disabled={isUploading}
-              >
-                {isRecording ? (
-                  <IoMicOffSharp size={24} />
-                ) : (
-                  <IoMicSharp size={24} />
-                )}
-                {isUploading && <div className="spinner-border spinner-border-sm ml-2" role="status" />}
-              </Button>
-              <Button onClick={handlePreviousSentence} variant="secondary" style={{ marginBottom: '10px' }}>
-                Previous
-              </Button>
-              <Button onClick={() => setCurrentSentenceIndex(0)} variant="secondary">
-                Start
-              </Button>
-              {isRecording && (
-                <LiveAudioVisualizer
-                  mediaRecorder={mediaRecorder}
-                  width={200}
-                  height={75}
-                />
+            <Button
+              onClick={isRecording ? handleStopRecording : handleStartRecording}
+              variant="primary"
+              style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              disabled={isUploading}
+            >
+              {isRecording ? (
+                <IoMicOffSharp size={24} />
+              ) : (
+                <IoMicSharp size={24} />
               )}
-            </Col>
+              {isUploading && <div className="spinner-border spinner-border-sm ml-2" role="status" />}
+            </Button>
+            <Button onClick={handlePreviousSentence} variant="secondary" disabled={currentSentenceIndex === 0}>
+              Previous Sentence
+            </Button>
+            {currentSentenceIndex === sentences.length - 1 && !incorrectPronunciation && (
+              <Button onClick={handleCompleteStory} variant="success" style={{ marginTop: '10px' }}>
+                Complete Story
+              </Button>
+            )}
+          </Col>
           </Row>
         </Container>
       </div>
-
       <PronunciationModal
         show={showModal}
-        onHide={() => setShowModal(false)}
+        handleClose={() => setShowModal(false)}
         sentence={selectedSentence}
-        onAudioUpload={handleUpload}
       />
     </div>
   );
 };
 
 export default StoryReader;
- 
