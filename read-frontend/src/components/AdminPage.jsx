@@ -18,6 +18,9 @@ import { RiAdminFill } from "react-icons/ri";
 import { FaBookReader } from "react-icons/fa";
 import AddStoryComponent from './AddStoryComponent';
 import { FiLogOut } from 'react-icons/fi'; 
+import StoryTable from './StoryTable';
+import UserTable from './UserTable';
+
 
 
 
@@ -63,16 +66,17 @@ const AdminPage = () => {
 
             
             <SubMenu label="Stories">
-              <MenuItem icon={<GiBookshelf/>} > All </MenuItem>
-              <MenuItem icon={<FaBook/>} >Easy</MenuItem>
-              <MenuItem icon={<PiBooksFill/>} >Medium</MenuItem>
-              <MenuItem icon={<ImBooks/>} >Hard</MenuItem>
+              <MenuItem icon={<GiBookshelf/>} onClick={()=>{handleContentChange(<StoryTable storyType='all'/>)} }> All </MenuItem>
+              <MenuItem icon={<FaBook/>} onClick={()=>{handleContentChange(<StoryTable storyType='easy'/>)} }>Easy</MenuItem>
+              <MenuItem icon={<PiBooksFill/>} onClick={()=>{handleContentChange(<StoryTable storyType='medium'/>)} }>Medium</MenuItem>
+              <MenuItem icon={<ImBooks/>} onClick={()=>{handleContentChange(<StoryTable storyType='hard'/>)} }>Hard</MenuItem>
               <MenuItem icon={<IoAddCircle />} onClick={()=>{handleContentChange(<AddStoryComponent/>)} }>Add Story</MenuItem>
             </SubMenu>
             <SubMenu label='Users'>
-                <MenuItem icon={<FaBookReader />}>Readers</MenuItem>
-                <MenuItem icon={<BsPersonWorkspace />} >Teachers</MenuItem>
-                <MenuItem icon={<RiAdminFill/>}>Admins</MenuItem>
+                <MenuItem icon={<FaUser />}  onClick={()=>{handleContentChange(<UserTable userType='all'/>)} }>All</MenuItem>
+                <MenuItem icon={<FaBookReader />} onClick={()=>{handleContentChange(<UserTable userType='readers'/>)} }>Readers</MenuItem>
+                <MenuItem icon={<BsPersonWorkspace />} onClick={()=>{handleContentChange(<UserTable userType='teachers'/>)} } >Teachers</MenuItem>
+                <MenuItem icon={<RiAdminFill/>} onClick={()=>{handleContentChange(<UserTable userType='admins'/>)} }>Admins</MenuItem>
          
             </SubMenu>
             <SubMenu label='Statistics'>
@@ -85,8 +89,7 @@ const AdminPage = () => {
                 <MenuItem icon={<IoIosSettings />}>Settings</MenuItem>
                 <MenuItem icon={<IoIosSettings />}>Extras</MenuItem>
                 <MenuItem icon={<IoIosSettings />}>Data Export</MenuItem>
-                
-                
+              
             </SubMenu>
 
                         {/* Spacer to push the Sign Out button to the bottom */}

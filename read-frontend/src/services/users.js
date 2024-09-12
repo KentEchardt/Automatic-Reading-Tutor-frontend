@@ -84,3 +84,47 @@ export const getReadingLevel = async () => {
 
 
 
+// Get all reader users
+export const getReaders = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}users/readers/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting readers:', error);
+    return []; 
+  }
+};
+
+// Get all Teacher users
+export const getTeachers= async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}users/teachers/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting teachers:', error);
+    return []; 
+  }
+};
+
+// Get all admin users
+export const getAdmins = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}users/admins/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting admins:', error);
+    return []; 
+  }
+};
+
+
+export const deleteUser = async(userId) =>{
+  try {
+    const response = await apiClient.delete(`${baseUrl}/users/${userId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return [];
+  }
+}
+

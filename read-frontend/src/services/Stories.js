@@ -1,17 +1,8 @@
+import axios from 'axios';
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/";
 
-// Get all stories
-export const getAllStories = async () => {
-  try {
-    const response = await apiClient.get(`${baseUrl}stories/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error getting stories:', error);
-    return [];
-  }
-};
 
 // Get a specific story by ID
 export const getStoryById = async (storyId) => {
@@ -27,7 +18,7 @@ export const getStoryById = async (storyId) => {
 // Create a new story (keeping axios)
 export const createStory = async (storyData) => {
   try {
-    const response = await axios.post(`${baseUrl}stories/`, storyData);
+    const response = await apiClient.post(`${baseUrl}stories/`, storyData);
     return response.data;
   } catch (error) {
     console.error('Error creating story:', error);
@@ -57,3 +48,57 @@ export const getStoryCover = async (storyId) => {
     return null;
   }
 };
+
+// Get all stories
+export const getAllStories = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}stories/get_stories/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting stories:', error);
+    return [];
+  }
+};
+
+// Get easy stories
+export const getEasyStories = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}stories/get_easy_stories/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting easy stories:', error);
+    return [];
+  }
+};
+
+// Get meidum stories
+export const getMediumStories = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}stories/get_medium_stories/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting medium stories:', error);
+    return [];
+  }
+};
+
+// Get easy stories
+export const getHardStories = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}stories/get_hard_stories/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting hard stories:', error);
+    return [];
+  }
+};
+
+export const deleteStory = async(storyId) =>{
+  try {
+    const response = await apiClient.delete(`${baseUrl}/stories/${storyId}/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting story:', error);
+    return [];
+  }
+}
