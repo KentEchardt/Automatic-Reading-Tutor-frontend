@@ -128,3 +128,42 @@ export const deleteUser = async(userId) =>{
   }
 }
 
+export const getAverageReadingDuration = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/average_reading_duration/`);
+    return response.data.average_duration;
+  } catch (error) {
+    console.error('Error fetching average reading duration:', error);
+    return null;
+  }
+};
+
+export const getAverageProgress = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/average_progress/`);
+    return response.data.average_progress;
+  } catch (error) {
+    console.error('Error fetching average progress:', error);
+    return null;
+  }
+};
+
+export const getAverageReadingLevel = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/average_reading_level/`);
+    return response.data.average_reading_level;
+  } catch (error) {
+    console.error('Error fetching average reading level:', error);
+    return null;
+  }
+};
+
+export const getAverageTimeToComplete = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/average_time_to_complete/`);
+    return response.data.average_time_to_complete;
+  } catch (error) {
+    console.error('Error fetching average time to complete:', error);
+    return null;
+  }
+};

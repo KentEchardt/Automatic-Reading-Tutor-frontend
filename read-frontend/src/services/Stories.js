@@ -102,3 +102,43 @@ export const deleteStory = async(storyId) =>{
     return [];
   }
 }
+
+
+export const getMostPopularStory = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/stories/most_popular/`);
+    return {
+      story: response.data,
+      sessionCount: response.data.session_count
+    };
+  } catch (error) {
+    console.error('Error fetching most popular story:', error);
+    return null;
+  }
+};
+
+export const getLeastPopularStory = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/stories/least_popular/`);
+    return {
+      story: response.data,
+      sessionCount: response.data.session_count
+    };
+  } catch (error) {
+    console.error('Error fetching least popular story:', error);
+    return null;
+  }
+};
+
+export const getMostEngagedStory = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/stories/most_engaged/`);
+    return {
+      story: response.data,
+      totalEngagement: response.data.total_engagement
+    };
+  } catch (error) {
+    console.error('Error fetching most engaged story:', error);
+    return null;
+  }
+};

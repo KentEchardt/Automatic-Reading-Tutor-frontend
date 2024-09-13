@@ -20,6 +20,7 @@ import AddStoryComponent from './AddStoryComponent';
 import { FiLogOut } from 'react-icons/fi'; 
 import StoryTable from './StoryTable';
 import UserTable from './UserTable';
+import StoryStatistics from './StoryStatistics';
 
 
 
@@ -81,7 +82,7 @@ const AdminPage = () => {
             </SubMenu>
             <SubMenu label='Statistics'>
                 <MenuItem icon={<FaUser />}>Users</MenuItem>
-                <MenuItem icon={<GiBookshelf />} >Stories</MenuItem> 
+                <MenuItem icon={<GiBookshelf />} onClick={()=>{handleContentChange(<StoryStatistics/>)} } >Stories</MenuItem> 
                 
                 
             </SubMenu>

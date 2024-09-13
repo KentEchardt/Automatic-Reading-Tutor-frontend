@@ -30,6 +30,7 @@ const UserTable = ({ userType }) => {
                     return;
             }
             setUsers(response);
+            console.log(response)
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -70,7 +71,7 @@ const UserTable = ({ userType }) => {
                             <td>{user.reading_level}</td>
                             <td>{user.date_joined}</td>
                             <td>
-                                <Button variant="info" className="me-2 my-1">Update</Button>
+                                <Button variant="info" className="me-2 my-1">Change Role</Button>
                                 <Button variant="danger" onClick={() => handleDelete(user.id)} className="my-1">Delete</Button>
                             </td>
                         </tr>
