@@ -47,7 +47,7 @@ const StoryTable = ({ storyType }) => {
 
     return (
         <Container>
-            <h2 className="my-4">List of {storyType} stories</h2>
+            <h2 className="my-4 text-center">List of {storyType} stories</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>

@@ -21,6 +21,7 @@ import { FiLogOut } from 'react-icons/fi';
 import StoryTable from './StoryTable';
 import UserTable from './UserTable';
 import StoryStatistics from './StoryStatistics';
+import UserStatistics from './UserStatistics';
 
 
 
@@ -75,13 +76,13 @@ const AdminPage = () => {
             </SubMenu>
             <SubMenu label='Users'>
                 <MenuItem icon={<FaUser />}  onClick={()=>{handleContentChange(<UserTable userType='all'/>)} }>All</MenuItem>
-                <MenuItem icon={<FaBookReader />} onClick={()=>{handleContentChange(<UserTable userType='readers'/>)} }>Readers</MenuItem>
-                <MenuItem icon={<BsPersonWorkspace />} onClick={()=>{handleContentChange(<UserTable userType='teachers'/>)} } >Teachers</MenuItem>
-                <MenuItem icon={<RiAdminFill/>} onClick={()=>{handleContentChange(<UserTable userType='admins'/>)} }>Admins</MenuItem>
+                <MenuItem icon={<FaBookReader />} onClick={()=>{handleContentChange(<UserTable userType='reader'/>)} }>Readers</MenuItem>
+                <MenuItem icon={<BsPersonWorkspace />} onClick={()=>{handleContentChange(<UserTable userType='teacher'/>)} } >Teachers</MenuItem>
+                <MenuItem icon={<RiAdminFill/>} onClick={()=>{handleContentChange(<UserTable userType='admin'/>)} }>Admins</MenuItem>
          
             </SubMenu>
             <SubMenu label='Statistics'>
-                <MenuItem icon={<FaUser />}>Users</MenuItem>
+                <MenuItem icon={<FaUser />} onClick={()=>{handleContentChange(<UserStatistics/>)} } >Users</MenuItem>
                 <MenuItem icon={<GiBookshelf />} onClick={()=>{handleContentChange(<StoryStatistics/>)} } >Stories</MenuItem> 
                 
                 

@@ -75,7 +75,7 @@ const UserSummaryComponent = () => {
   return (
     <Container className="text-center">
         <Row style={{ marginBottom:'10cqh'}}>
-           <h2 >{username}</h2> 
+           {/* <h2 >{username}</h2>  */}
         </Row>
       
       <Row className="justify-content-center align-items-end">

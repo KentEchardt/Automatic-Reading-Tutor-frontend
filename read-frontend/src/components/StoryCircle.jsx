@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Image } from 'react-bootstrap';
 import { getStoryCover } from '../services/Stories';
+import { useNavigate } from 'react-router-dom';
 
 // Component for displaying a Story in a circle
 const StoryCircle = ( {story_id} ) => {
@@ -8,10 +9,16 @@ const StoryCircle = ( {story_id} ) => {
   const [storyTitle, setStoryTitle] = useState('') 
   const [storyImageData, setStoryImageData] = useState(null)
   const [contentType, setContentType] = useState(null)
+  const navigate = useNavigate()
 
   const base64ToImage = (base64String, contentType) => {
     return `data:${contentType};base64,${base64String}`;
   };
+
+  const handleClick = () =>{
+    navigate(`/story/${story_id}`)
+  }
+
 
   // Fetch story cover data
   useEffect(() => {
@@ -74,6 +81,7 @@ const StoryCircle = ( {story_id} ) => {
         cursor: 'pointer'
       }}
       className="story-circle"
+      onClick={handleClick}
     >
       <Image
         src={base64ToImage(storyImageData, contentType)}

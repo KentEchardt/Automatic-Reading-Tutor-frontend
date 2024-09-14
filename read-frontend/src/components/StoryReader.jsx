@@ -297,7 +297,7 @@ const StoryReader = () => {
             <Button
               onClick={isRecording ? handleStopRecording : handleStartRecording}
               variant="primary"
-              style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ marginBottom: '2cqh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               disabled={isUploading}
             >
               {isRecording ? (
@@ -307,8 +307,11 @@ const StoryReader = () => {
               )}
               {isUploading && <div className="spinner-border spinner-border-sm ml-2" role="status" />}
             </Button>
-            <Button onClick={handlePreviousSentence} variant="secondary" disabled={currentSentenceIndex === 0}>
+            <Button style={{ marginBottom: '2cqh'}} onClick={handlePreviousSentence} variant="secondary" disabled={currentSentenceIndex === 0}>
               Previous Sentence
+            </Button>
+            <Button style={{ marginBottom: '2cqh'}} onClick={handleStartNewSession} variant="secondary" disabled={currentSentenceIndex === 0}>
+              Start from beginning
             </Button>
             {currentSentenceIndex === sentences.length - 1 && !incorrectPronunciation && (
               <Button onClick={handleCompleteStory} variant="success" style={{ marginTop: '10px' }}>

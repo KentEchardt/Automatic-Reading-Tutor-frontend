@@ -97,7 +97,10 @@ const StoryCard = ({ story }) => {
             color: 'white',
           }}
         >
-          <div style={{ marginBottom: '4cqh', cursor: 'pointer' }}>
+          <div className="mb-3 cursor-pointer" >
+            <h5>{storyTitle}</h5>
+          </div>
+          <div style={{ marginBottom: '2cqh', cursor: 'pointer' }}>
             <FaBook size={24} />
             <span style={{ marginLeft: '8px' }} onClick={handleClick}>Read Story</span>
           </div>

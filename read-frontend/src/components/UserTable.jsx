@@ -16,13 +16,13 @@ const UserTable = ({ userType }) => {
                 case 'all':
                     response = await getAllUsers();
                     break;
-                case 'readers':
+                case 'reader':
                     response = await getReaders();
                     break;
-                case 'teachers':
+                case 'teacher':
                     response = await getTeachers();
                     break;
-                case 'admins':
+                case 'admin':
                     response = await getAdmins();
                     break;
                 default:
@@ -48,7 +48,7 @@ const UserTable = ({ userType }) => {
 
     return (
         <Container>
-            <h2 className="my-4">List of {userType}</h2>
+            <h2 className="my-4 text-center">List of {userType} users</h2>
             <Table striped bordered hover>
                 <thead>
                     <tr>
