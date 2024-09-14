@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Button, Row, Col } from 'react-bootstrap';
+import { Container, Button, Row, Col, ProgressBar } from 'react-bootstrap';
 import HeaderComponent from './HeaderComponent';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById } from '../services/Stories';
 import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
-import { startSession, endSession, pauseSession } from '../services/readingsession';
+import { startSession, endSession, pauseSession, getProgress, getPosition } from '../services/readingsession';
 
 const StoryReader = () => {
   const { storyId } = useParams();
@@ -21,11 +21,14 @@ const StoryReader = () => {
   const [selectedSentence, setSelectedSentence] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [readingTime, setReadingTime] = useState(0);
+  const [progress,setProgress] = useState(0)
+  const [sentences, setSentences] = useState([])
   const startTimeRef = useRef(null);
   const accumulatedTimeRef = useRef(0);
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
   const navigate = useNavigate();
+
 
   // Fetch the story and start the session when the component mounts
   useEffect(() => {
@@ -56,6 +59,54 @@ const StoryReader = () => {
       stopTimerAndPauseSession();
     };
   }, [storyId]);
+
+  useEffect(() => {
+    if (story) {
+      // Parse sentences from the story
+      const parsedSentences = story.fulltext.match(/[^.!?]*[.!?]/g).map(sentence => sentence.trim());
+      setSentences(parsedSentences);
+    }
+  }, [story]);
+  
+
+// Effect to fetch progress and position after sentences have been set
+useEffect(() => {
+  const fetchProgressAndPosition = async () => {
+    if (sessionId && sentences.length > 0) {
+      try {
+        // Fetch the progress
+        const progressResponse = await getProgress(sessionId);
+        setProgress(progressResponse);
+
+        // Fetch the current character position
+        const positionResponse = await getPosition(sessionId);
+        const charPosition = positionResponse;
+
+        // Find the sentence index based on the character position
+        const sentenceIndex = getSentenceIndexFromPosition(charPosition, sentences);
+        console.log(charPosition)
+        
+        setCurrentSentenceIndex(sentenceIndex);
+      } catch (error) {
+        console.error('Error fetching progress and position:', error);
+      }
+    }
+  };
+
+  fetchProgressAndPosition();
+}, [sessionId, sentences]);
+
+  const getSentenceIndexFromPosition = (charPosition, sentences) => {
+    let totalChars = 0;
+    for (let i = 0; i < sentences.length; i++) {
+      totalChars += sentences[i].length;
+      if (charPosition < totalChars) {
+  
+        return i;
+      }
+    }
+    return 0;  // Default to first sentence if something goes wrong
+  };
 
 
   useEffect(() => {
@@ -147,7 +198,7 @@ const StoryReader = () => {
     );
   }
 
-  const sentences = story.fulltext.match(/[^.!?]*[.!?]/g).map(sentence => sentence.trim());
+
 
   const handleSentenceClick = (index) => {
     setSelectedSentence(sentences[index]);
@@ -173,6 +224,18 @@ const StoryReader = () => {
   const handlePreviousSentence = () => {
     if (currentSentenceIndex > 0) {
       setCurrentSentenceIndex(currentSentenceIndex - 1);
+    }
+  };
+  const handleNextSentence = async () => {
+    if (currentSentenceIndex < sentences.length - 1) {
+      setCurrentSentenceIndex(currentSentenceIndex + 1);
+
+      try {
+        const progressResponse = await getProgress(sessionId);
+        setProgress(progressResponse);
+      } catch (error) {
+        console.error('Error fetching progress:', error);
+      }
     }
   };
 
@@ -203,7 +266,7 @@ const StoryReader = () => {
 
       if (isMatch) {
         if (currentSentenceIndex < sentences.length - 1) {
-          setCurrentSentenceIndex(currentSentenceIndex + 1);
+          handleNextSentence();
           setIncorrectPronunciation(false);
           setShowModal(false);
         } else {
@@ -262,8 +325,9 @@ const StoryReader = () => {
   return (
     <div>
       <HeaderComponent />
-      <div style={{ backgroundColor: 'black', color: 'white' }}>
-        <Container style={{ paddingTop: '10cqh', paddingBottom: '10cqh' }}>
+      <div style={{ backgroundColor: 'black', color: 'white', paddingTop:'5cqh' }}>
+        <ProgressBar variant='success' now={progress} animated  label={`${progress.toFixed(1)}%`} ></ProgressBar>
+        <Container style={{ paddingTop: '5cqh', paddingBottom: '10cqh' }}>
           <Row>
             <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <Container
