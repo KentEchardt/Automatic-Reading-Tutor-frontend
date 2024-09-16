@@ -142,3 +142,26 @@ export const getMostEngagedStory = async () => {
     return null;
   }
 };
+
+export const getCurrentStories = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/stories/get_current_story_listings/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting current stories:', error);
+    return [];
+  }
+};
+
+// Get user's most recent story using their token
+export const getProgress = async (session_id) => {
+  try {
+    const response = await apiClient.get(`${baseUrl}readingsessions/progress/`, {
+      params: { session_id }  // Pass session_id as query parameter
+    });
+    return response.data.progress;
+  } catch (error) {
+    console.error('Error getting progress:', error);
+    return null; // Return null in case of an error
+  }
+};

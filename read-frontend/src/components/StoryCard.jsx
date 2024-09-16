@@ -76,6 +76,7 @@ const StoryCard = ({ story }) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      
       <Image
         src={base64ToImage(storyImageData, contentType)}
         alt={storyTitle || 'No Title'}

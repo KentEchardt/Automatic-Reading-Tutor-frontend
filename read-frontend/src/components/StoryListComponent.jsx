@@ -4,8 +4,9 @@ import 'react-multi-carousel/lib/styles.css'; // Import the carousel styles
 import UserSummaryComponent from './UserSummaryComponent';
 import {Container,Row} from 'react-bootstrap'
 import StoryCarousel from './StoryCarousel';
-import { getStoryListings } from '../services/Stories';
+import { getStoryListings, getCurrentStories } from '../services/Stories';
 import { getUsername } from '../services/users';
+
 
 
 
@@ -41,6 +42,7 @@ const responsiveSettings = {
 const StoryListComponent = () => {
 
   const [storyListings, setStoryListings] = useState([])
+  const [currentStoryListings, setCurrentStoryListings] = useState([])
   const [username, setUsername] = useState('')
 
 
@@ -51,11 +53,21 @@ useEffect(() => {
       const response = await getStoryListings();
       setStoryListings(response);
     } catch (error) {
+      console.error('Error fetching current story listings:', error);
+    }
+  };
+
+  const fetchCurrentStories = async () => {
+    try {
+      const response = await getCurrentStories();
+      setCurrentStoryListings(response);
+    } catch (error) {
       console.error('Error fetching story listings:', error);
     }
   };
 
   fetchStoryListings();
+  fetchCurrentStories();
 }, []);
 
 
@@ -72,11 +84,17 @@ useEffect(() => {
       </div>
 
       <Container fluid style={{ paddingBottom: '10cqh' }}>
+        {/* Currently Reading Stories Carousel */}
+        <Row style={{ height: "auto" }}>
+          <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh', }}>Currently Reading</h3>
+          <StoryCarousel stories={currentStoryListings} responsiveSettings={responsiveSettings} containerClass={"recommended-carousel"}/>
+        </Row>
+
 
         {/* Recommended Stories Carousel */}
         <Row style={{ height: "auto" }}>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh', }}>Recommended Stories</h3>
-          <StoryCarousel stories={null} responsiveSettings={responsiveSettings} containerClass={"recommended-carousel"}/>
+          <StoryCarousel stories={null} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
         </Row>
 
         {/* My List Stories Carousel */}

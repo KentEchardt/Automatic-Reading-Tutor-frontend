@@ -7,7 +7,7 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById } from '../services/Stories';
 import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
-import { startSession, endSession, pauseSession, getProgress, getPosition } from '../services/readingsession';
+import { startSession, endSession, pauseSession, getProgress, getPosition, previousSentence } from '../services/readingsession';
 
 const StoryReader = () => {
   const { storyId } = useParams();
@@ -69,8 +69,6 @@ const StoryReader = () => {
   }, [story]);
   
 
-// Effect to fetch progress and position after sentences have been set
-useEffect(() => {
   const fetchProgressAndPosition = async () => {
     if (sessionId && sentences.length > 0) {
       try {
@@ -92,6 +90,8 @@ useEffect(() => {
       }
     }
   };
+// Effect to fetch progress and position after sentences have been set
+useEffect(() => {
 
   fetchProgressAndPosition();
 }, [sessionId, sentences]);
@@ -221,11 +221,18 @@ useEffect(() => {
     </span>
   ));
 
-  const handlePreviousSentence = () => {
+  const handlePreviousSentence = async () => {
     if (currentSentenceIndex > 0) {
-      setCurrentSentenceIndex(currentSentenceIndex - 1);
+      try {
+        await previousSentence(sessionId, sentences[currentSentenceIndex - 1]);
+        await fetchProgressAndPosition();
+      } catch (error) {
+        console.error('Error handling previous sentence:', error);
+        // Add user feedback here, e.g., toast notification
+      }
     }
   };
+
   const handleNextSentence = async () => {
     if (currentSentenceIndex < sentences.length - 1) {
       setCurrentSentenceIndex(currentSentenceIndex + 1);

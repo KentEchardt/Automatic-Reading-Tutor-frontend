@@ -17,7 +17,7 @@ export const getAllReadingSessions = async () => {
 export const getTotalStoriesRead = async () => {
   try {
     const response = await apiClient.get(`${baseUrl}readingsessions/total-stories-read/`);
-    return response.data.total_stories_read;
+    return response.data;
   } catch (error) {
     console.error('Error getting total stories read:', error);
     return []; 
@@ -98,3 +98,36 @@ export const getPosition = async (session_id) => {
     return null; // Return null in case of an error
   }
 };
+
+export const previousSentence = async (sessionId, sentence) => {
+  try {
+    const formData = new FormData();
+    formData.append('session_id', sessionId);
+    formData.append('sentence', sentence);
+
+    const response = await apiClient.post('/readingsessions/previous-sentence/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error setting previous sentence:', error);
+    throw error;
+  }
+};
+
+
+// Get user's progress in story
+export const getStoryProgress = async (story_id) => {
+  try {
+    const response = await apiClient.get(`${baseUrl}readingsessions/progress_by_story/`, {
+      params: { story_id }  // Pass session_id as query parameter
+    });
+    return response.data.progress
+  } catch (error) {
+    console.error('Error getting story progress:', error);
+    return null; // Return null in case of an error
+  }
+};
+
