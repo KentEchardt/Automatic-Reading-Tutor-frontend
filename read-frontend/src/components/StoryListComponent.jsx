@@ -91,11 +91,11 @@ useEffect(() => {
         </Row>
 
 
-        {/* Recommended Stories Carousel */}
-        <Row style={{ height: "auto" }}>
+        {/* Recommended Stories Carousel -- to be implemented at another time */}
+        {/* <Row style={{ height: "auto" }}>
           <h3 style={{ marginTop: "5cqh", marginBottom: '2.5cqh', }}>Recommended Stories</h3>
           <StoryCarousel stories={null} responsiveSettings={responsiveSettings} containerClass={"other-carousels"}/>
-        </Row>
+        </Row> */}
 
         {/* My List Stories Carousel */}
         <Row>
