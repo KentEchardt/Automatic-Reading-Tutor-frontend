@@ -395,8 +395,9 @@ useEffect(() => {
       </div>
       <PronunciationModal
         show={showModal}
-        handleClose={() => setShowModal(false)}
+        onHide={() => setShowModal(false)}
         sentence={selectedSentence}
+        onAudioUpload={handleUpload}
       />
     </div>
   );

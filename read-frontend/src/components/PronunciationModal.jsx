@@ -3,6 +3,7 @@ import { Modal, Button, Col, Row, Container } from 'react-bootstrap';
 import { IoMicSharp, IoMicOffSharp } from 'react-icons/io5';
 import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { RiSpeakLine } from "react-icons/ri";
+import { getPronunciation } from '../services/audio';
 
 //Component for assisting user with word pronunciation
 const PronunciationModal = ({ show, onHide, sentence, onAudioUpload }) => {
@@ -12,6 +13,17 @@ const PronunciationModal = ({ show, onHide, sentence, onAudioUpload }) => {
   const [utterance, setUtterance] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isUploading, setIsUploading] = useState(false); // New state for uploading
+  const [pronunciation, setPronunciation] = useState("Pronunciation")
+
+  useEffect(()=>{
+    if (sentence) {
+      getPronunciation(sentence).then((response)=>{
+        setPronunciation(response)
+      }).catch((error)=>{
+        console.error(error)
+      });
+    }
+  }, [sentence])
 
   useEffect(() => {
     if (synth) {
@@ -78,7 +90,7 @@ const PronunciationModal = ({ show, onHide, sentence, onAudioUpload }) => {
       <Modal.Body>
         <div style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-            <div>Pronunciation{/* Placeholder for pronunciation */}</div>
+            <div>{pronunciation}</div>
             <div style={{ fontSize: '18px', marginTop: '10px' }}>{sentence}</div>
           </div>
         </div>
