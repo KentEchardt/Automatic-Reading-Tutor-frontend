@@ -8,6 +8,7 @@ import { getStoryById } from '../services/Stories';
 import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
 import { startSession, endSession, pauseSession, getProgress, getPosition, previousSentence } from '../services/readingsession';
+import StoryCompletionModal from './StoryCompletionModal';
 
 const StoryReader = () => {
   const { storyId } = useParams();
@@ -23,6 +24,8 @@ const StoryReader = () => {
   const [readingTime, setReadingTime] = useState(0);
   const [progress,setProgress] = useState(0)
   const [sentences, setSentences] = useState([])
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [completionStats, setCompletionStats] = useState({});
   const startTimeRef = useRef(null);
   const accumulatedTimeRef = useRef(0);
   const boxRef = useRef(null);
@@ -159,7 +162,9 @@ useEffect(() => {
     if (sessionId) {
       const finalTime = calculateElapsedTime();
       try {
-        await endSession(sessionId, finalTime);
+        const response = await endSession(sessionId, finalTime);
+        setCompletionStats(response); // response should contain stats like progress, reading levels, etc.
+        setShowCompletionModal(true); // Show modal after completion
         setSessionId(null);
         accumulatedTimeRef.current = 0;
         startTimeRef.current = null;
@@ -169,6 +174,9 @@ useEffect(() => {
       }
     }
   };
+
+
+  
 
 
 
@@ -399,8 +407,16 @@ useEffect(() => {
         sentence={selectedSentence}
         onAudioUpload={handleUpload}
       />
+
+        {/* Other StoryReader content */}
+    <StoryCompletionModal
+      show={showCompletionModal}
+      onHide={() => setShowCompletionModal(false)}
+      stats={completionStats} 
+    />
     </div>
   );
 };
+
 
 export default StoryReader;
