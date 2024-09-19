@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ProgressBar } from 'react-bootstrap';
-import { getStats } from '../services/readingsession';
+import { getStats, pauseSession } from '../services/readingsession';
 
+//Modal for displaying story completion statistics
 const StoryCompletionModal = ({ show, onHide, sessionId }) => {
   const [stats, setStats] = useState(null);
   const [animatedLevel, setAnimatedLevel] = useState(0);
@@ -20,6 +21,7 @@ const StoryCompletionModal = ({ show, onHide, sessionId }) => {
       if (show && sessionId) {
         try {
           const statsResponse = await getStats(sessionId);
+          
           setStats(statsResponse);
 
           // Start animating the progress bar when stats are fetched

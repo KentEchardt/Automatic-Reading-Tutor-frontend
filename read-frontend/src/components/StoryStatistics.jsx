@@ -3,6 +3,7 @@ import { Container, Card, Row, Col, Spinner } from 'react-bootstrap';
 import { getMostPopularStory, getLeastPopularStory, getMostEngagedStory } from '../services/Stories';
 import { FaThumbsUp, FaThumbsDown, FaClock } from 'react-icons/fa';
 
+//Card component for displaying a statistic
 const StoryStatCard = ({ title, icon, storyTitle, data }) => (
   <Card className="mb-4 h-100 shadow-sm" style={{ transition: 'all 0.3s' }}>
     <Card.Body>
@@ -16,10 +17,12 @@ const StoryStatCard = ({ title, icon, storyTitle, data }) => (
   </Card>
 );
 
+//Component for displaying all story Statistics
 const StoryStatistics = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  //fetch all relevant statistics
   useEffect(() => {
     const fetchData = async () => {
       const [mostPopular, leastPopular, mostEngaged] = await Promise.all([

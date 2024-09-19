@@ -16,7 +16,6 @@ const StoryModal = ({ story, onClose }) => {
               <Col>
                 <h5>Author: {story.author}</h5>
                 <p>{story.description}</p>
-                {/* Add other details like story genre, reading level, etc. */}
               </Col>
               {story.image && (
                 <Col>

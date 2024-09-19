@@ -3,6 +3,7 @@ import { Container, Card, Row, Col, Spinner } from 'react-bootstrap';
 import { getAverageReadingDuration, getAverageProgress, getAverageReadingLevel, getAverageTimeToComplete } from '../services/users';
 import { FaClock, FaChartLine, FaBookReader, FaFlag } from 'react-icons/fa';
 
+//Card component for displaying a statistic
 const UserStatCard = ({ title, icon, data }) => (
   <Card className="mb-4 h-100 shadow-sm" style={{ transition: 'all 0.3s' }}>
     <Card.Body>
@@ -21,6 +22,7 @@ const parseDurationString = (durationString) => {
   return (hours * 60) + minutes + (seconds / 60); // Convert to total minutes
 };
 
+//Component for displaying user statistics
 const UserStatistics = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);

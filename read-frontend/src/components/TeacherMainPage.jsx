@@ -4,6 +4,7 @@ import HeaderComponent from './HeaderComponent';
 import { createClass, getClasses } from '../services/classes';
 import { getStudents } from '../services/classes';
 
+//Component for displaying teacher tables - classes and students in classes belonging to Teacher logged in
 const TeacherMainPage = () => {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -45,6 +46,7 @@ const TeacherMainPage = () => {
       // Optionally refresh the list or notify the user
       const response = await getClasses(); // Refresh the class list
       fetchClasses()
+      alert('New class created.')
     } catch (error) {
       console.error('Error creating class:', error);
     }
@@ -88,19 +90,19 @@ const TeacherMainPage = () => {
                 <th>Username</th>
                 <th>Reading Level</th>
                 <th>Class Code</th>
-                <th>Actions</th>
+                {/* <th>Actions</th> */}
               </tr>
             </thead>
             <tbody>
               {students.map(user =>
                 <tr key={user.id}>
                   <td>{user.username}</td>
-                  <td>{user.readingLevel}</td>
+                  <td>{user.reading_level?user.reading_level.toFixed(2):0}</td>
                   <td>{user.class_code}</td>
-                  <td>
-                    <button className='btn btn-info'>Update</button>
-                    <button className='btn btn-danger' style={{ marginLeft: '10px' }}>Delete</button>
-                  </td>
+                  {/* <td>
+                   
+                    <button className='btn btn-danger' style={{ marginLeft: '10px' }}>Remove</button>
+                  </td> */}
                 </tr>
               )}
             </tbody>

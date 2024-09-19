@@ -3,6 +3,7 @@ import { deleteStory, getAllStories, getEasyStories, getHardStories, getMediumSt
 import { Container, Table, Button } from 'react-bootstrap';
 import AddStoryComponent from './AddStoryComponent';
 
+//Component for displaying stories depending on type requested by admin user (which button clicked on admin page)
 const StoryTable = ({ storyType }) => {
     const [stories, setStories] = useState([]);
     const [selectedStory, setSelectedStory] = useState(null);

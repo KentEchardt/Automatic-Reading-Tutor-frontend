@@ -1,3 +1,5 @@
+// Functions for accessing reading session endpoints
+
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/"; 

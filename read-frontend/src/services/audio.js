@@ -1,6 +1,10 @@
+// Functions for uploading audio and getting pronunciation
+
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/";
+
+
 
 export const uploadAudio = async (sessionId, audioFile, matchingText) => {
   try {

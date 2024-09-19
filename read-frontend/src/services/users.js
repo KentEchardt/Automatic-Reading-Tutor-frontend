@@ -1,3 +1,5 @@
+// Functions for accessing user endpoints
+
 import axios from 'axios';
 import apiClient from './auth';
 

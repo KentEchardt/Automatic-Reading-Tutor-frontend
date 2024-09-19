@@ -4,6 +4,7 @@ import HeaderComponent from './HeaderComponent';
 import { changePassword, getUserDetails } from '../services/users';
 import { useNavigate } from 'react-router-dom';
 
+//Component to show and edit user profile
 const UserProfile = () => {
   const [passwords, setPasswords] = useState({
     old: '',

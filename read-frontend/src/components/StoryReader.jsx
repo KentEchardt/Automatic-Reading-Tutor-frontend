@@ -10,6 +10,7 @@ import PronunciationModal from './PronunciationModal';
 import { startSession, endSession, pauseSession, getProgress, getPosition, previousSentence, getStats } from '../services/readingsession';
 import StoryCompletionModal from './StoryCompletionModal';
 
+// Component for Reading Stories
 const StoryReader = () => {
   const { storyId } = useParams();
   const [story, setStory] = useState(null);
@@ -163,7 +164,7 @@ useEffect(() => {
     };
   }, [sessionId]);
 
- 
+ // Calculate the time spent in the current session
   const calculateElapsedTime = () => {
     if (startTimeRef.current) {
       const now = Date.now();
@@ -173,7 +174,7 @@ useEffect(() => {
     return accumulatedTimeRef.current;
   };
 
-
+//Stop the timer and pause the session
   const stopTimerAndPauseSession = async () => {
     if (sessionId && startTimeRef.current) {
       const elapsedTime = calculateElapsedTime();
@@ -188,6 +189,7 @@ useEffect(() => {
     }
   };
 
+  //End session and navigate back to home page when story completed
   const handleCompleteStory = async () => {
     if (sessionId) {
       const finalTime = calculateElapsedTime();
@@ -257,6 +259,7 @@ useEffect(() => {
     </span>
   ));
 
+  //Move to previous sentence and fetch progress again
   const handlePreviousSentence = async () => {
     if (currentSentenceIndex > 0) {
       try {
@@ -264,11 +267,11 @@ useEffect(() => {
         await fetchProgressAndPosition();
       } catch (error) {
         console.error('Error handling previous sentence:', error);
-        // Add user feedback here, e.g., toast notification
       }
     }
   };
 
+// Move to next sentence
   const handleNextSentence = async () => {
     if (currentSentenceIndex < sentences.length - 1) {
       setCurrentSentenceIndex(currentSentenceIndex + 1);
@@ -282,6 +285,7 @@ useEffect(() => {
     }
   };
 
+  //Start audio recording
   const handleStartRecording = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
@@ -303,6 +307,7 @@ useEffect(() => {
     }
   };
 
+  //Upload audio - check if it matches the current sentence - move to next sentence if correct, display feedback if not
   const handleUpload = async (recordedBlob) => {
     try {
       const isMatch = await uploadAudio(sessionId, recordedBlob, sentences[currentSentenceIndex]);
@@ -328,6 +333,7 @@ useEffect(() => {
     }
   };
 
+  //Stop audio recording
   const handleStopRecording = async () => {
     if (mediaRecorder) {
       mediaRecorder.ondataavailable = async (e) => {
@@ -354,7 +360,7 @@ useEffect(() => {
   };
 
 
-
+  //Start new session when user starts story from beginning
   const handleStartNewSession = async () => {
     if (sessionId) {
       const elapsedTime = calculateElapsedTime();
@@ -362,6 +368,8 @@ useEffect(() => {
       await endSession(sessionId, elapsedTime);
       await fetchProgressAndPosition(); 
       setSessionId(null);
+      accumulatedTimeRef.current = 0;
+      startTimeRef.current = null;
       await initializeSession(); // Start a new session
       }
       catch (error) {
@@ -372,6 +380,18 @@ useEffect(() => {
 
     
   };
+
+  const handleShowStats = async () => {
+    if (sessionId){
+      try{
+        await stopTimerAndPauseSession();
+        setShowCompletionModal(true);
+      }
+      catch(error){
+        console.error('Error pausing session.')
+      }
+    }
+  }
 
   return (
     <div>
@@ -434,7 +454,7 @@ useEffect(() => {
               </Button>
             )}
               {showCompleteButton && (
-              <Button onClick={() => setShowCompletionModal(true)} variant="success" style={{ marginTop: '10px' }}>
+              <Button onClick={handleShowStats} variant="success" style={{ marginTop: '10px' }}>
                 Show Stats
               </Button>
             )}

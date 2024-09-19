@@ -1,3 +1,5 @@
+// Functions for accessing class endpoints
+
 import apiClient from './auth';
 
 const baseUrl = 'http://localhost:8000/'; 

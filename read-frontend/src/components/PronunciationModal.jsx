@@ -12,7 +12,7 @@ const PronunciationModal = ({ show, onHide, sentence, onAudioUpload }) => {
   const [synth, setSynth] = useState(window.speechSynthesis);
   const [utterance, setUtterance] = useState(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // New state for uploading
+  const [isUploading, setIsUploading] = useState(false); 
   const [pronunciation, setPronunciation] = useState("Pronunciation")
 
   useEffect(()=>{

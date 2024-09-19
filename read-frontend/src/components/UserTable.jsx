@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { deleteUser, getAdmins, getAllUsers, getReaders, getTeachers } from '../services/users';
 import { Container, Table, Button } from 'react-bootstrap';
 
+//Component for displaying user data depending on users requested by admin (button clicked on admin page)
 const UserTable = ({ userType }) => {
     const [users, setUsers] = useState([]);
 

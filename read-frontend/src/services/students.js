@@ -1,3 +1,5 @@
+// Functions for accessing student endpoints
+
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/"; 
@@ -33,3 +35,4 @@ export const joinClass = async (classCode) => {
     throw error;
   }
 };
+

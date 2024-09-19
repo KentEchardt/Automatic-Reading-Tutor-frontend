@@ -1,4 +1,5 @@
-import axios from 'axios';
+// Functions for accessing story endpoints
+
 import apiClient from './auth';
 
 const baseUrl = "http://127.0.0.1:8000/";

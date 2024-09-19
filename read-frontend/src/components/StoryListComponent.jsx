@@ -28,15 +28,6 @@ const responsiveSettings = {
   }
 };
 
-//Defining and handling selectedStory, which is used to determine when a story should be shown in a Modal
-// const [selectedStory, setSelectedStory] = useState(null);
-// const handleView = (story) => {
-//   setSelectedStory(story);
-// };
-
-// const handleClose = () => {
-//   setSelectedStory(null);
-// };
 
 //Component for displaying all story carousels
 const StoryListComponent = () => {

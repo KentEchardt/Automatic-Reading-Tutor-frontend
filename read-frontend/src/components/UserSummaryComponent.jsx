@@ -4,6 +4,7 @@ import StoryCircle from './StoryCircle';
 import { getReadingLevel, getUsername } from '../services/users';
 import { getMostRecentStory, getTotalStoriesRead } from '../services/readingsession';
 
+//Component for displaying users reading level, most recently read story and total stories read
 const UserSummaryComponent = () => {
   const [username, setUsername] = useState('');
   const [readingLevel, setReadingLevel] = useState(0);
