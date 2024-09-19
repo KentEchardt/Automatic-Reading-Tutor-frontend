@@ -70,18 +70,36 @@ const StoryReader = () => {
     if (story) {
       const fullText = story.fulltext;
   
-      // Split by sentences using a regex that captures the sentence-ending punctuation
-      const parsedSentences = fullText.match(/[^.!?]*[.!?](\s|$)/g);
+      // Regex to match sentences, including those with dialogue
+      const regex = /[^.!?]+(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/g;
+      
+      let parsedSentences = [];
+      let lastIndex = 0;
+      let match;
   
-      // Check if the parsed sentences match the length of the full text
-      const parsedText = parsedSentences ? parsedSentences.join('') : '';
+      while ((match = regex.exec(fullText)) !== null) {
+        // Include any space between the last sentence and this one
+        const spaceBefore = fullText.slice(lastIndex, match.index);
+        parsedSentences.push(spaceBefore + match[0]);
+        lastIndex = regex.lastIndex;
+      }
   
-      // Set the sentences to state
-      setSentences(parsedSentences);
+      // Add any remaining text after the last sentence
+      if (lastIndex < fullText.length) {
+        parsedSentences.push(fullText.slice(lastIndex));
+      }
+  
+      // Check if the parsed sentences match the full text exactly
+      const parsedText = parsedSentences.join('');
+  
+      if (parsedText === fullText) {
+        setSentences(parsedSentences);
+      } else {
+        console.warn('Parsed text does not match original text exactly');
+        setSentences([fullText]); // Fallback to using the entire text as one sentence
+      }
     }
   }, [story]);
-  
-  
 
   const fetchProgressAndPosition = async () => {
     if (sessionId && sentences.length > 0) {
