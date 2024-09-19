@@ -1,8 +1,6 @@
-# React + Vite
+READ: Automatic Reading Tutor - Frontend
+Group 102
+ECHKEN001, NYVTEN001, RMKYAS002
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Gitlab Repository Link:
+https://gitlab.cs.uct.ac.za/rmkyas002/read-frontend-application.git
