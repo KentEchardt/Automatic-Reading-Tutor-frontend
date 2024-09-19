@@ -41,7 +41,6 @@ export const getStoryListings = async () => {
 export const getStoryCover = async (storyId) => {
   try {
     const response = await apiClient.get(`${baseUrl}stories/${storyId}/get_story_cover/`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error getting story by ID:', error);

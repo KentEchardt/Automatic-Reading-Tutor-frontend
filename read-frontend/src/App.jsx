@@ -9,6 +9,7 @@ import PrivacyPolicy from './components/PrivacyPolicy'
 import StoryReader from './components/StoryReader'
 import RegisterComponent from './components/RegisterComponent'
 import ProtectedRoute from './features/ProtectedRoute'// Import the ProtectedRoute component
+import UserProfile from './components/UserProfile'
 
 function App() {
   return (
@@ -35,6 +36,9 @@ function App() {
         }></Route>
         <Route path="/story/:storyId" element={
           <ProtectedRoute component={StoryReader} allowedRoles={['reader']} />
+        }></Route>
+        <Route path="/profile" element={
+          <ProtectedRoute component={UserProfile} allowedRoles={['reader']} />
         }></Route>
         
 

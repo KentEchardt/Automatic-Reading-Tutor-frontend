@@ -168,3 +168,25 @@ export const getAverageTimeToComplete = async () => {
   }
 };
 
+export const getUserDetails = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/get_user_details/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    return null;
+  }
+};
+
+export const changePassword = async (old_password, new_password) => {
+  try {
+    const response = await apiClient.post(`${baseUrl}users/change_password/`, {
+      old_password,
+      new_password,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing password:', error);
+    return null; 
+  }
+};

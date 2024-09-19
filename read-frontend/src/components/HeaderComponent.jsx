@@ -97,7 +97,7 @@ const HeaderComponent = () => {
         <Dropdown.Toggle as={ProfileToggle} id="dropdown-autoclose-true">
         </Dropdown.Toggle>
         <Dropdown.Menu align={{ lg: 'end' }} style={{ right: '0', left: 'auto' }} >
-          <Dropdown.Item href="#">{username}</Dropdown.Item>
+          <Dropdown.Item href="/profile">{username}</Dropdown.Item>
           <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
         </Dropdown.Menu>
             

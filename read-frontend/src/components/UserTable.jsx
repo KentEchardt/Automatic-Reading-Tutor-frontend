@@ -30,7 +30,7 @@ const UserTable = ({ userType }) => {
                     return;
             }
             setUsers(response);
-            console.log(response)
+      
         } catch (error) {
             console.error('Error fetching users:', error);
         }

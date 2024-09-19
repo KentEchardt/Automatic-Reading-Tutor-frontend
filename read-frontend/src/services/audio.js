@@ -15,7 +15,6 @@ export const uploadAudio = async (sessionId, audioFile, matchingText) => {
       },
     });
 
-    console.log('Response:', response.data);
     return response.data.match;
   } catch (error) {
     console.error('Error uploading audio file:', error);

@@ -38,7 +38,7 @@ const StoryCircle = ({ story_id }) => {
         try {
           const response = await getStoryProgress(story_id);
           setStoryProgress(response);
-          console.log(storyProgress)
+
         } catch (error) {
           console.error('Error fetching story progress:', error);
         }

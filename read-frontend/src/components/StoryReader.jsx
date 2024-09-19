@@ -89,7 +89,7 @@ const StoryReader = () => {
         // Fetch the progress
         const progressResponse = await getProgress(sessionId);
         setProgress(progressResponse);
-        console.log(progressResponse)
+
         if (progressResponse>=100){
           setShowCompleteButton(true)
 
@@ -102,7 +102,7 @@ const StoryReader = () => {
 
         // Find the sentence index based on the character position
         const sentenceIndex = getSentenceIndexFromPosition(charPosition, sentences);
-        console.log(charPosition)
+   
         
         setCurrentSentenceIndex(sentenceIndex);
       } catch (error) {

@@ -15,21 +15,44 @@ const UserStatCard = ({ title, icon, data }) => (
   </Card>
 );
 
+const parseDurationString = (durationString) => {
+  // Duration string format is assumed to be "HH:MM:SS"
+  const [hours, minutes, seconds] = durationString.split(':').map(Number);
+  return (hours * 60) + minutes + (seconds / 60); // Convert to total minutes
+};
+
 const UserStatistics = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
-      const [avgDuration, avgProgress, avgLevel, avgTimeToComplete] = await Promise.all([
-        getAverageReadingDuration(),
-        getAverageProgress(),
-        getAverageReadingLevel(),
-        getAverageTimeToComplete()
-      ]);
-      setStats({ avgDuration, avgProgress, avgLevel, avgTimeToComplete });
+      try {
+        const [avgDuration, avgProgress, avgLevel, avgTimeToComplete] = await Promise.all([
+          getAverageReadingDuration(),
+          getAverageProgress(),
+          getAverageReadingLevel(),
+          getAverageTimeToComplete()
+        ]);
+
+        // Convert average durations from string to total minutes
+        const avgDurationInMinutes = parseDurationString(avgDuration);
+        const avgTimeToCompleteInMinutes = parseDurationString(avgTimeToComplete);
+
+        setStats({
+          avgDuration: avgDurationInMinutes.toFixed(3),
+          avgProgress: avgProgress.toFixed(3),
+          avgLevel: avgLevel.toFixed(3),
+          avgTimeToComplete: avgTimeToCompleteInMinutes.toFixed(3)
+        });
+      } catch (error) {
+        console.error('Error fetching statistics:', error);
+        setError('Failed to fetch statistics. Please try again later.');
+      }
       setLoading(false);
     };
+
     fetchData();
   }, []);
 
@@ -51,7 +74,7 @@ const UserStatistics = () => {
           <UserStatCard
             title="Avg. Reading Duration"
             icon={<FaClock size={24} className="text-primary" />}
-            data={stats.avgDuration}
+            data={`${stats.avgDuration} mins`}
           />
         </Col>
         <Col md={3}>
@@ -72,7 +95,7 @@ const UserStatistics = () => {
           <UserStatCard
             title="Avg. Time to Complete"
             icon={<FaFlag size={24} className="text-danger" />}
-            data={stats.avgTimeToComplete?stats.avgTimeToComplete:"No completed stories found"}
+            data={`${stats.avgTimeToComplete} mins`}
           />
         </Col>
       </Row>

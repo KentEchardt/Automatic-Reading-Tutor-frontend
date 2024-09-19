@@ -28,7 +28,7 @@ const StoryStatistics = () => {
         getMostEngagedStory()
       ]);
       setStats({ mostPopular, leastPopular, mostEngaged });
-      console.log(stats)
+
       setLoading(false);
     };
     fetchData();
