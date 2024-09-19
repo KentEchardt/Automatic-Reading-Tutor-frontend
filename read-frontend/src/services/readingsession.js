@@ -122,7 +122,7 @@ export const previousSentence = async (sessionId, sentence) => {
 export const getStoryProgress = async (story_id) => {
   try {
     const response = await apiClient.get(`${baseUrl}readingsessions/progress_by_story/`, {
-      params: { story_id }  // Pass session_id as query parameter
+      params: { story_id }  // Pass story_id as query parameter
     });
     return response.data.progress
   } catch (error) {
@@ -131,3 +131,15 @@ export const getStoryProgress = async (story_id) => {
   }
 };
 
+
+export const getStats = async (session_id) => {
+  try {
+    const response = await apiClient.get(`${baseUrl}readingsessions/session-stats/`, {
+      params: { session_id }  // Pass session_id as query parameter
+    });
+    return response.data
+  } catch (error) {
+    console.error('Error getting session stats:', error);
+    return null; // Return null in case of an error
+  }
+};

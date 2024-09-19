@@ -158,7 +158,7 @@ const UserSummaryComponent = () => {
     >
       <p style={{ fontSize: '1rem' }}>Reading Level:</p>
       <h1>{getLetterGrade(readingLevel)}</h1>
-      <small>{readingLevel}/500</small>
+      <small>{readingLevel.toFixed(2)}/500</small>
     </div>
   </div>
         </Col>

@@ -7,7 +7,7 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { getStoryById } from '../services/Stories';
 import { uploadAudio } from '../services/audio';
 import PronunciationModal from './PronunciationModal';
-import { startSession, endSession, pauseSession, getProgress, getPosition, previousSentence } from '../services/readingsession';
+import { startSession, endSession, pauseSession, getProgress, getPosition, previousSentence, getStats } from '../services/readingsession';
 import StoryCompletionModal from './StoryCompletionModal';
 
 const StoryReader = () => {
@@ -25,13 +25,26 @@ const StoryReader = () => {
   const [progress,setProgress] = useState(0)
   const [sentences, setSentences] = useState([])
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  const [completionStats, setCompletionStats] = useState({});
+
+  const [showCompleteButton, setShowCompleteButton] = useState(false)
   const startTimeRef = useRef(null);
   const accumulatedTimeRef = useRef(0);
   const boxRef = useRef(null);
   const sentenceRefs = useRef([]);
   const navigate = useNavigate();
 
+
+
+   const initializeSession = async () => {
+      try {
+        const response = await startSession(storyId);
+        setSessionId(response);
+        startTimeRef.current = Date.now();
+        accumulatedTimeRef.current = 0;
+      } catch (error) {
+        console.error('Error starting session:', error);
+      }
+    };
 
   // Fetch the story and start the session when the component mounts
   useEffect(() => {
@@ -44,17 +57,7 @@ const StoryReader = () => {
       }
     };
 
-    const initializeSession = async () => {
-      try {
-        const response = await startSession(storyId);
-        setSessionId(response);
-        startTimeRef.current = Date.now();
-        accumulatedTimeRef.current = 0;
-      } catch (error) {
-        console.error('Error starting session:', error);
-      }
-    };
-
+ 
     fetchStory();
     initializeSession();
 
@@ -65,11 +68,19 @@ const StoryReader = () => {
 
   useEffect(() => {
     if (story) {
-      // Parse sentences from the story
-      const parsedSentences = story.fulltext.match(/[^.!?]*[.!?]/g).map(sentence => sentence.trim());
+      const fullText = story.fulltext;
+  
+      // Split by sentences using a regex that captures the sentence-ending punctuation
+      const parsedSentences = fullText.match(/[^.!?]*[.!?](\s|$)/g);
+  
+      // Check if the parsed sentences match the length of the full text
+      const parsedText = parsedSentences ? parsedSentences.join('') : '';
+  
+      // Set the sentences to state
       setSentences(parsedSentences);
     }
   }, [story]);
+  
   
 
   const fetchProgressAndPosition = async () => {
@@ -78,7 +89,13 @@ const StoryReader = () => {
         // Fetch the progress
         const progressResponse = await getProgress(sessionId);
         setProgress(progressResponse);
+        console.log(progressResponse)
+        if (progressResponse>=100){
+          setShowCompleteButton(true)
 
+        }else{
+          setShowCompleteButton(false)
+        }
         // Fetch the current character position
         const positionResponse = await getPosition(sessionId);
         const charPosition = positionResponse;
@@ -128,12 +145,7 @@ useEffect(() => {
     };
   }, [sessionId]);
 
-  const startTimer = () => {
-    intervalRef.current = setInterval(() => {
-      setReadingTime((prevTime) => prevTime + 1);
-    }, 1000);
-  };
-
+ 
   const calculateElapsedTime = () => {
     if (startTimeRef.current) {
       const now = Date.now();
@@ -163,8 +175,6 @@ useEffect(() => {
       const finalTime = calculateElapsedTime();
       try {
         const response = await endSession(sessionId, finalTime);
-        setCompletionStats(response); // response should contain stats like progress, reading levels, etc.
-        setShowCompletionModal(true); // Show modal after completion
         setSessionId(null);
         accumulatedTimeRef.current = 0;
         startTimeRef.current = null;
@@ -287,7 +297,7 @@ useEffect(() => {
         } else {
           // Show the "Complete Story" button when the last sentence is correct
           alert('Story completed successfully!');
-          handleCompleteStory();
+          fetchProgressAndPosition();
         }
       } else {
         alert('Pronunciation was incorrect. Please try again.');
@@ -329,12 +339,20 @@ useEffect(() => {
 
   const handleStartNewSession = async () => {
     if (sessionId) {
-      await endSession(sessionId, timeReading);
+      const elapsedTime = calculateElapsedTime();
+      try{
+      await endSession(sessionId, elapsedTime);
+      await fetchProgressAndPosition(); 
+      setSessionId(null);
+      await initializeSession(); // Start a new session
+      }
+      catch (error) {
+        console.error('Error starting new session:', error);
+      }
+      
     }
-    setCurrentSentenceIndex(0);
-    setTimeReading(0);
-    setSessionId(null);
-    fetchSession(); // Start a new session
+
+    
   };
 
   return (
@@ -377,7 +395,7 @@ useEffect(() => {
               onClick={isRecording ? handleStopRecording : handleStartRecording}
               variant="primary"
               style={{ marginBottom: '2cqh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              disabled={isUploading}
+              disabled={isUploading || showCompleteButton}
             >
               {isRecording ? (
                 <IoMicOffSharp size={24} />
@@ -389,12 +407,17 @@ useEffect(() => {
             <Button style={{ marginBottom: '2cqh'}} onClick={handlePreviousSentence} variant="secondary" disabled={currentSentenceIndex === 0}>
               Previous Sentence
             </Button>
-            <Button style={{ marginBottom: '2cqh'}} onClick={handleStartNewSession} variant="secondary" disabled={currentSentenceIndex === 0}>
+            <Button style={{ marginBottom: '2cqh'}} onClick={handleStartNewSession} variant="secondary" disabled={currentSentenceIndex === 0 && progress<100}>
               Start from beginning
             </Button>
-            {currentSentenceIndex === sentences.length - 1 && !incorrectPronunciation && (
+            {showCompleteButton && (
               <Button onClick={handleCompleteStory} variant="success" style={{ marginTop: '10px' }}>
                 Complete Story
+              </Button>
+            )}
+              {showCompleteButton && (
+              <Button onClick={() => setShowCompletionModal(true)} variant="success" style={{ marginTop: '10px' }}>
+                Show Stats
               </Button>
             )}
           </Col>
@@ -412,7 +435,7 @@ useEffect(() => {
     <StoryCompletionModal
       show={showCompletionModal}
       onHide={() => setShowCompletionModal(false)}
-      stats={completionStats} 
+      sessionId={sessionId} 
     />
     </div>
   );

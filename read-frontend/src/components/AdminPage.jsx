@@ -34,13 +34,19 @@ const AdminPage = () => {
 
 
   const [sideContent, setSideContent] = useState(<div/>);
+  const [storyTypeKey, setStoryTypeKey] = useState(0);
+  const navigate = useNavigate();
+  
+  const handleStoryTableChange = (storyType) => {
+    setStoryTypeKey(prevKey => prevKey + 1);
+    handleContentChange(<StoryTable key={storyTypeKey} storyType={storyType} />);
+  };
 
   //Change content depending on buton clicked
   const handleContentChange = (content) => {
     setSideContent(content);
   };
 
-  const navigate = useNavigate();
 
   const handleSignOut = () => {
     // Clear user authentication (remove tokens, clear state, etc.)
@@ -68,12 +74,12 @@ const AdminPage = () => {
 
             
             <SubMenu label="Stories">
-              <MenuItem icon={<GiBookshelf/>} onClick={()=>{handleContentChange(<StoryTable storyType='all'/>)} }> All </MenuItem>
-              <MenuItem icon={<FaBook/>} onClick={()=>{handleContentChange(<StoryTable storyType='easy'/>)} }>Easy</MenuItem>
-              <MenuItem icon={<PiBooksFill/>} onClick={()=>{handleContentChange(<StoryTable storyType='medium'/>)} }>Medium</MenuItem>
-              <MenuItem icon={<ImBooks/>} onClick={()=>{handleContentChange(<StoryTable storyType='hard'/>)} }>Hard</MenuItem>
-              <MenuItem icon={<IoAddCircle />} onClick={()=>{handleContentChange(<AddStoryComponent/>)} }>Add Story</MenuItem>
-            </SubMenu>
+                <MenuItem icon={<GiBookshelf/>} onClick={() => handleStoryTableChange('all')}>All</MenuItem>
+                <MenuItem icon={<FaBook/>} onClick={() => handleStoryTableChange('easy')}>Easy</MenuItem>
+                <MenuItem icon={<PiBooksFill/>} onClick={() => handleStoryTableChange('medium')}>Medium</MenuItem>
+                <MenuItem icon={<ImBooks/>} onClick={() => handleStoryTableChange('hard')}>Hard</MenuItem>
+                <MenuItem icon={<IoAddCircle />} onClick={() => handleContentChange(<AddStoryComponent storyData={null}/>)}>Add Story</MenuItem>
+              </SubMenu>
             <SubMenu label='Users'>
                 <MenuItem icon={<FaUser />}  onClick={()=>{handleContentChange(<UserTable userType='all'/>)} }>All</MenuItem>
                 <MenuItem icon={<FaBookReader />} onClick={()=>{handleContentChange(<UserTable userType='reader'/>)} }>Readers</MenuItem>

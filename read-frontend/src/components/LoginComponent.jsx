@@ -90,9 +90,7 @@ const LoginComponent = () => {
                   </Button>
                 </InputGroup>
               </Form.Group>
-              <Form.Group controlId="rememberMe" style={{ marginBottom: '1.5rem' }}>
-                <Form.Check type="checkbox" label="Remember Me" checked={rememberMe} onChange={handleRememberMeChange} />
-              </Form.Group>
+          
               <Button variant="primary" onClick={handleSubmit} style={{ width: '100%' }}>Login</Button>
               <Form.Group style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                 <Form.Label>

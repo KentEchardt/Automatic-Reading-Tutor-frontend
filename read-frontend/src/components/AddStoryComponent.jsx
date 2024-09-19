@@ -1,14 +1,24 @@
-import {React, useState } from 'react';
-import { Form, Button, Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
-import { createStory } from '../services/Stories.js'; // Import createStory function
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { createStory, updateStory } from '../services/Stories'; // Import necessary services
 
-const AddStoryComponent = () => {
+const AddStoryComponent = ({ storyData }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [storyText, setStoryText] = useState('');
+  const [imageFile, setImageFile] = useState(null);
   const [errors, setErrors] = useState({});
-  const [imageFile, setImageFile] = useState(null); // State for image file
+
+  // Initialize form fields if storyData is provided (for updating)
+  useEffect(() => {
+    if (storyData) {
+      setTitle(storyData.title);
+      setDescription(storyData.description);
+      setDifficulty(storyData.difficulty_level);
+      setStoryText(storyData.fulltext);
+    }
+  }, [storyData]);
 
   const handleValidation = () => {
     let formIsValid = true;
@@ -34,7 +44,6 @@ const AddStoryComponent = () => {
       errors['storyText'] = 'Story text is required';
     }
 
-    // Validate image file type (optional)
     if (imageFile && !/\.(jpg|jpeg|png)$/i.test(imageFile.name)) {
       formIsValid = false;
       errors['imageFile'] = 'Invalid image file. Please upload a JPG, JPEG, or PNG.';
@@ -53,117 +62,94 @@ const AddStoryComponent = () => {
       formData.append('difficulty_level', difficulty);
       formData.append('fulltext', storyText);
 
-      // Append image file if available
       if (imageFile) {
         formData.append('image', imageFile);
       }
 
       try {
-        const response = await createStory(formData); // Use createStory function
-        if (response) {
-          alert('Story created successfully!');
-          // Clear form data after successful submission
-          setTitle('');
-          setDescription('');
-          setDifficulty('');
-          setStoryText('');
-          setImageFile(null);
+        let response;
+        if (storyData) {
+          // Update the story
+          response = await updateStory(storyData.id, formData);
         } else {
-          console.error('Error creating story:', response.data);
+          // Create a new story
+          response = await createStory(formData);
+        }
+
+        if (response) {
+          alert(storyData ? 'Story updated successfully!' : 'Story created successfully!');
+        } else {
           alert('An error occurred. Please try again.');
         }
       } catch (error) {
-        console.error('Error creating story:', error);
         alert('An error occurred. Please try again.');
       }
-    } else {
-      alert('Please fill in all required fields.');
     }
   };
 
   const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]); // Access the first selected file
+    setImageFile(e.target.files[0]);
   };
 
   return (
     <Container>
       <Row className="justify-content-center">
         <Col md={8}>
-          <h2 className="text-center">Add New Story</h2>
+          <h2 className="text-center">{storyData ? 'Update Story' : 'Add New Story'}</h2>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formTitle">
+            <Form.Group controlId="formTitle" className="mb-3">
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter story title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                isInvalid={!!errors.title}
+                placeholder="Enter story title"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.title}
-              </Form.Control.Feedback>
+              {errors.title && <span style={{ color: 'red' }}>{errors.title}</span>}
             </Form.Group>
 
-            <Form.Group controlId="formDescription" className="mt-3">
+            <Form.Group controlId="formDescription" className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter short description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                isInvalid={!!errors.description}
+                placeholder="Enter story description"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.description}
-              </Form.Control.Feedback>
+              {errors.description && <span style={{ color: 'red' }}>{errors.description}</span>}
             </Form.Group>
 
-            <Form.Group controlId="formDifficulty" className="mt-3">
+            <Form.Group controlId="formDifficulty" className="mb-3">
               <Form.Label>Difficulty Level</Form.Label>
               <Form.Control
-                as="select"
+                type="text"
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
-                isInvalid={!!errors.difficulty}
-              >
-                <option value="">Select difficulty level</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {errors.difficulty}
-              </Form.Control.Feedback>
+                placeholder="Enter difficulty level (easy, medium, hard)"
+              />
+              {errors.difficulty && <span style={{ color: 'red' }}>{errors.difficulty}</span>}
             </Form.Group>
 
-            <Form.Group controlId="formStoryText" className="mt-3">
-              <Form.Label>Story Text</Form.Label>
+            <Form.Group controlId="formStoryText" className="mb-3">
+              <Form.Label>Full Text</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={5}
-                placeholder="Enter full story text"
                 value={storyText}
                 onChange={(e) => setStoryText(e.target.value)}
-                isInvalid={!!errors.storyText}
+                placeholder="Enter full story text"
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.storyText}
-              </Form.Control.Feedback>
+              {errors.storyText && <span style={{ color: 'red' }}>{errors.storyText}</span>}
             </Form.Group>
 
-            <Form.Group controlId="formImage" className="mt-3">
-              <Form.Label>Story Cover Image</Form.Label>
-              <InputGroup>
-                <FormControl type="file" onChange={handleImageChange} isInvalid={!!errors.imageFile} />
-                <Form.Control.Feedback type="invalid">
-                  {errors.imageFile}
-                </Form.Control.Feedback>
-              </InputGroup>
+            <Form.Group controlId="formImage" className="mb-3">
+              <Form.Label>Image</Form.Label>
+              <Form.Control type="file" onChange={handleImageChange} />
+              {errors.imageFile && <span style={{ color: 'red' }}>{errors.imageFile}</span>}
             </Form.Group>
 
             <Button variant="primary" type="submit" className="mt-4">
-              Add Story
+              {storyData ? 'Update Story' : 'Add Story'}
             </Button>
           </Form>
         </Col>

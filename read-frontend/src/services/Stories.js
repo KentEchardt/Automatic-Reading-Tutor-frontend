@@ -165,3 +165,14 @@ export const getProgress = async (session_id) => {
     return null; // Return null in case of an error
   }
 };
+
+// Update story service
+export const updateStory = async (storyId, formData) => {
+  try {
+      const response = await apiClient.put(`${baseUrl}stories/${storyId}/update_story/`, formData);
+      return response.data;
+  } catch (error) {
+      console.error('Error updating story:', error);
+      throw error;
+  }
+};

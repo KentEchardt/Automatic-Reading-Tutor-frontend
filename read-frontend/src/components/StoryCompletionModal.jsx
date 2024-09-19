@@ -1,25 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ProgressBar } from 'react-bootstrap';
+import { getStats } from '../services/readingsession';
 
-const StoryCompletionModal = ({ show, onHide, stats }) => {
-  const { initialReadingLevel, newReadingLevel, totalReadingTime, progress, errors } = stats;
-  const [animatedLevel, setAnimatedLevel] = useState(initialReadingLevel);
-  
-  // Animate the progress bar/circle from initialReadingLevel to newReadingLevel
+const StoryCompletionModal = ({ show, onHide, sessionId }) => {
+  const [stats, setStats] = useState(null);
+  const [animatedLevel, setAnimatedLevel] = useState(0);
+
+  // Format seconds into hours, minutes, and seconds
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${hrs}h ${mins}m ${secs}s`;
+  };
+
+  // Fetch stats when modal is shown
   useEffect(() => {
-    if (show) {
-      let level = initialReadingLevel;
-      const interval = setInterval(() => {
-        if (level < newReadingLevel) {
-          level += 1;
-          setAnimatedLevel(level);
-        } else {
-          clearInterval(interval);
+    const fetchStats = async () => {
+      if (show && sessionId) {
+        try {
+          const statsResponse = await getStats(sessionId);
+          setStats(statsResponse);
+
+          // Start animating the progress bar when stats are fetched
+          setAnimatedLevel(statsResponse.initial_reading_level);
+          let level = statsResponse.initial_reading_level;
+          const interval = setInterval(() => {
+            if (level < statsResponse.new_reading_level) {
+              level += 1;
+              setAnimatedLevel(level);
+            } else {
+              clearInterval(interval);
+            }
+          }, 5); // Adjust speed here
+
+          return () => clearInterval(interval);
+        } catch (error) {
+          console.error('Error fetching stats:', error);
         }
-      }, 5); // Adjust speed here
-      return () => clearInterval(interval);
-    }
-  }, [show, initialReadingLevel, newReadingLevel]);
+      }
+    };
+
+    fetchStats();
+  }, [show, sessionId]);
 
   // Convert reading level to letter grade
   const getLetterGrade = (level) => {
@@ -30,6 +53,16 @@ const StoryCompletionModal = ({ show, onHide, stats }) => {
     if (level < 500) return 'S';
     return 'D';
   };
+
+  if (!stats) {
+    return null; // Return null or a loading spinner while stats are being fetched
+  }
+
+  const initialReadingLevel = stats.initial_reading_level;
+  const newReadingLevel = stats.new_reading_level;
+  const totalReadingTime = stats.total_reading_time;
+  const progress = stats.progress;
+  const errors = stats.errors;
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -44,15 +77,14 @@ const StoryCompletionModal = ({ show, onHide, stats }) => {
           </div>
           <ProgressBar 
             now={(animatedLevel / 500) * 100} 
-            label={`${animatedLevel} / 500`} 
             animated
           />
           <div style={{ fontSize: '1.5rem', marginTop: '1rem' }}>
-            New Level: {newReadingLevel} ({getLetterGrade(newReadingLevel)})
+            New Level: {newReadingLevel?.toFixed(2)} ({getLetterGrade(newReadingLevel)})
           </div>
         </div>
         <h5>Statistics</h5>
-        <p>Total Reading Time: {totalReadingTime} seconds</p>
+        <p>Total Reading Time: {formatTime(totalReadingTime)}</p>
         <p>Story Progress: {progress}%</p>
         <p>Total Errors: {errors}</p>
       </Modal.Body>
