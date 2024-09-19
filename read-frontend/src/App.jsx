@@ -38,7 +38,7 @@ function App() {
           <ProtectedRoute component={StoryReader} allowedRoles={['reader']} />
         }></Route>
         <Route path="/profile" element={
-          <ProtectedRoute component={UserProfile} allowedRoles={['reader']} />
+          <ProtectedRoute component={UserProfile} allowedRoles={['reader','teacher']} />
         }></Route>
         
 

@@ -2,16 +2,6 @@ import apiClient from './auth';
 
 const baseUrl = 'http://localhost:8000/'; 
 
-// Get all classes
-export const getAllClasses = async () => {
-  try {
-    const response = await apiClient.get(`${baseUrl}classes/`);
-    return response.data;
-  } catch (error) {
-    console.error('Error getting classes:', error);
-    return [];
-  }
-};
 
 // Get a specific class by ID (optional)
 export const getClassById = async (classId) => {
@@ -23,13 +13,37 @@ export const getClassById = async (classId) => {
   }
 };
 
-// Create a new class (keeping axios)
-export const createClass = async (classData) => {
+
+
+// Function to create a new class
+export const createClass = async () => {
   try {
-    const response = await axios.post(`${baseUrl}classes/`, classData);
-    return response.data;
+    const response = await apiClient.post(`${baseUrl}classes/create_class/`, {}); // Add necessary payload if needed
+    console.log('Class created:', response.data);
   } catch (error) {
     console.error('Error creating class:', error);
-    return null; 
+    throw error;
+  }
+};
+
+// Get all students
+export const getStudents = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}classes/get_students/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting students:', error);
+    return [];
+  }
+};
+
+// Get all students
+export const getClasses = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}classes/get_classes/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting classes:', error);
+    return [];
   }
 };

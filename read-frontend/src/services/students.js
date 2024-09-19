@@ -24,14 +24,12 @@ export const getStudentById = async (studentId) => {
   }
 };
 
-// Create a new student (keeping axios)
-export const createStudent = async (studentData) => {
+export const joinClass = async (classCode) => {
   try {
-    const response = await axios.post(`${baseUrl}students/`, studentData);
+    const response = await apiClient.post(`${baseUrl}students/join_class/`, { class_code: classCode });
     return response.data;
   } catch (error) {
-    console.error('Error creating student:', error);
-    return null; 
+    console.error("Error in joinClass API call:", error.response ? error.response.data : error);
+    throw error;
   }
 };
-

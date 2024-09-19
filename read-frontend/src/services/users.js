@@ -190,3 +190,14 @@ export const changePassword = async (old_password, new_password) => {
     return null; 
   }
 };
+
+
+export const getUserRole = async () => {
+  try {
+    const response = await apiClient.get(`${baseUrl}/users/role/`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user role:', error);
+    return null;
+  }
+};
